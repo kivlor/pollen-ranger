@@ -1,0 +1,31 @@
+# Godot 4+ specific ignores
+.godot/
+
+# Godot-specific ignores
+*.import
+.import/
+
+# Imported translations
+*.translations
+
+# Mono-specific ignores
+.mono/
+data_*/
+mono_crash.*.json
+
+# Build outputs
+build/
+*.x86_64
+*.64
+*.x86
+*.32
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
