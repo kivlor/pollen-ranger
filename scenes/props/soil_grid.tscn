@@ -1,0 +1,15 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/props/soil_grid.gd" id="1_script"]
+[ext_resource type="Material" path="res://assets/materials/soil.tres" id="2_soil"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_tile"]
+size = Vector3(0.95, 0.1, 0.95)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tile"]
+size = Vector3(0.95, 0.1, 0.95)
+
+[node name="SoilGrid" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="TilesRoot" type="Node3D" parent="."]

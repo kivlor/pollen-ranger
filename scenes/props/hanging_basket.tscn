@@ -1,0 +1,69 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/props/hanging_basket.gd" id="1_script"]
+[ext_resource type="Material" path="res://assets/materials/basket_wicker.tres" id="2_wicker"]
+[ext_resource type="Material" path="res://assets/materials/chain.tres" id="3_chain"]
+[ext_resource type="Material" path="res://assets/materials/vine.tres" id="4_vine"]
+[ext_resource type="Material" path="res://assets/materials/soil.tres" id="5_soil"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_basket"]
+top_radius = 0.6
+bottom_radius = 0.4
+height = 0.5
+radial_segments = 16
+rings = 4
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_soil"]
+top_radius = 0.55
+bottom_radius = 0.55
+height = 0.15
+radial_segments = 16
+rings = 1
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_chain"]
+top_radius = 0.02
+bottom_radius = 0.02
+height = 1.5
+radial_segments = 6
+rings = 1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_landing"]
+size = Vector3(1.0, 0.3, 1.0)
+
+[node name="HangingBasket" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="SuspensionRoot" type="Node3D" parent="."]
+
+[node name="ChainMesh" type="MeshInstance3D" parent="SuspensionRoot"]
+mesh = SubResource("CylinderMesh_chain")
+surface_material_override/0 = ExtResource("3_chain")
+position = Vector3(0.25, -0.75, 0)
+
+[node name="ChainMesh2" type="MeshInstance3D" parent="SuspensionRoot"]
+mesh = SubResource("CylinderMesh_chain")
+surface_material_override/0 = ExtResource("3_chain")
+position = Vector3(-0.25, -0.75, 0)
+
+[node name="VineMesh" type="MeshInstance3D" parent="SuspensionRoot"]
+visible = false
+mesh = SubResource("CylinderMesh_chain")
+surface_material_override/0 = ExtResource("4_vine")
+position = Vector3(0, -0.75, 0)
+scale = Vector3(2, 1, 2)
+
+[node name="BasketMesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_basket")
+surface_material_override/0 = ExtResource("2_wicker")
+position = Vector3(0, -1.5, 0)
+
+[node name="SoilMesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_soil")
+surface_material_override/0 = ExtResource("5_soil")
+position = Vector3(0, -1.2, 0)
+
+[node name="LandingArea" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LandingArea"]
+shape = SubResource("BoxShape3D_landing")
+position = Vector3(0, -1.3, 0)

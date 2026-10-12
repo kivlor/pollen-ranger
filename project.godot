@@ -7,7 +7,7 @@ config_version=5
 
 config/name="Pollen Ranger"
 config/description="A thumb-sized scout purging the Blight from an overgrown greenhouse"
-run/main_scene="res://scenes/main.tscn"
+run/main_scene="res://scenes/test_props.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://assets/textures/icon.svg"
 
@@ -62,11 +62,13 @@ pointing/emulate_touch_from_mouse=true
 
 [layer_names]
 
-2d_physics/layer_1="player"
-2d_physics/layer_2="environment"
-2d_physics/layer_3="projectile"
-2d_physics/layer_4="blight"
-2d_physics/layer_5="bloom"
+3d_physics/layer_1="player"
+3d_physics/layer_2="environment"
+3d_physics/layer_3="climbable"
+3d_physics/layer_4="landing"
+3d_physics/layer_5="projectile"
+3d_physics/layer_6="blight"
+3d_physics/layer_7="bloom"
 
 [rendering]
 

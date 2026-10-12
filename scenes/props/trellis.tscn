@@ -1,0 +1,80 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/props/trellis_ladder.gd" id="1_script"]
+[ext_resource type="Material" path="res://assets/materials/wood.tres" id="2_wood"]
+[ext_resource type="Material" path="res://assets/materials/vine.tres" id="3_vine"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_climb"]
+size = Vector3(1.0, 2.0, 0.3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_post"]
+size = Vector3(0.1, 2.0, 0.1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_rung"]
+size = Vector3(0.8, 0.08, 0.1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_vine"]
+top_radius = 0.05
+bottom_radius = 0.05
+height = 2.2
+radial_segments = 8
+rings = 1
+
+[node name="TrellisLadder" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="ClimbArea" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ClimbArea"]
+shape = SubResource("BoxShape3D_climb")
+position = Vector3(0, 1.0, 0)
+
+[node name="CollisionBody" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape" type="CollisionShape3D" parent="CollisionBody"]
+shape = SubResource("BoxShape3D_climb")
+position = Vector3(0, 1.0, 0)
+
+[node name="MeshRoot" type="Node3D" parent="."]
+
+[node name="LeftPost" type="MeshInstance3D" parent="MeshRoot"]
+mesh = SubResource("BoxMesh_post")
+surface_material_override/0 = ExtResource("2_wood")
+position = Vector3(-0.4, 1.0, 0)
+
+[node name="RightPost" type="MeshInstance3D" parent="MeshRoot"]
+mesh = SubResource("BoxMesh_post")
+surface_material_override/0 = ExtResource("2_wood")
+position = Vector3(0.4, 1.0, 0)
+
+[node name="Rung1" type="MeshInstance3D" parent="MeshRoot"]
+mesh = SubResource("BoxMesh_rung")
+surface_material_override/0 = ExtResource("2_wood")
+position = Vector3(0, 0.3, 0)
+
+[node name="Rung2" type="MeshInstance3D" parent="MeshRoot"]
+mesh = SubResource("BoxMesh_rung")
+surface_material_override/0 = ExtResource("2_wood")
+position = Vector3(0, 0.7, 0)
+
+[node name="Rung3" type="MeshInstance3D" parent="MeshRoot"]
+mesh = SubResource("BoxMesh_rung")
+surface_material_override/0 = ExtResource("2_wood")
+position = Vector3(0, 1.1, 0)
+
+[node name="Rung4" type="MeshInstance3D" parent="MeshRoot"]
+mesh = SubResource("BoxMesh_rung")
+surface_material_override/0 = ExtResource("2_wood")
+position = Vector3(0, 1.5, 0)
+
+[node name="Rung5" type="MeshInstance3D" parent="MeshRoot"]
+mesh = SubResource("BoxMesh_rung")
+surface_material_override/0 = ExtResource("2_wood")
+position = Vector3(0, 1.9, 0)
+
+[node name="VineMesh" type="MeshInstance3D" parent="MeshRoot"]
+visible = false
+mesh = SubResource("CylinderMesh_vine")
+surface_material_override/0 = ExtResource("3_vine")
+position = Vector3(0, 1.1, 0.05)
+rotation = Vector3(0.2, 0, 0)

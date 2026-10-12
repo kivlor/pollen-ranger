@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "Chain"
+albedo_color = Color(0.4, 0.4, 0.42, 1.0)
+roughness = 0.4
+metallic = 0.8

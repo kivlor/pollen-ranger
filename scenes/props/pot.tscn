@@ -1,0 +1,55 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/props/giant_pot.gd" id="1_script"]
+[ext_resource type="Material" path="res://assets/materials/terracotta.tres" id="2_terracotta"]
+[ext_resource type="Material" path="res://assets/materials/terracotta_cracked.tres" id="3_terracotta_cracked"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_body"]
+radius = 0.85
+height = 2.5
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_pot"]
+top_radius = 0.7
+bottom_radius = 0.85
+height = 2.5
+radial_segments = 24
+rings = 8
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_pot_cracked"]
+top_radius = 0.65
+bottom_radius = 0.8
+height = 2.3
+radial_segments = 24
+rings = 8
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hiding"]
+size = Vector3(1.2, 1.0, 1.2)
+
+[node name="GiantPot" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="CollisionBody" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape" type="CollisionShape3D" parent="CollisionBody"]
+shape = SubResource("CylinderShape3D_body")
+position = Vector3(0, 1.25, 0)
+
+[node name="MeshRoot" type="Node3D" parent="."]
+
+[node name="IntactMesh" type="MeshInstance3D" parent="MeshRoot"]
+mesh = SubResource("CylinderMesh_pot")
+surface_material_override/0 = ExtResource("2_terracotta")
+position = Vector3(0, 1.25, 0)
+
+[node name="CrackedMesh" type="MeshInstance3D" parent="MeshRoot"]
+visible = false
+mesh = SubResource("CylinderMesh_pot_cracked")
+surface_material_override/0 = ExtResource("3_terracotta_cracked")
+position = Vector3(0, 1.15, 0)
+
+[node name="HidingArea" type="Area3D" parent="."]
+monitoring = false
+
+[node name="CollisionShape" type="CollisionShape3D" parent="HidingArea"]
+shape = SubResource("BoxShape3D_hiding")
+position = Vector3(0, 0.5, 0)

@@ -1,0 +1,146 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/props/pot.tscn" id="1_pot"]
+[ext_resource type="PackedScene" path="res://scenes/props/trellis.tscn" id="2_trellis"]
+[ext_resource type="PackedScene" path="res://scenes/props/hanging_basket.tscn" id="3_basket"]
+[ext_resource type="Script" path="res://scripts/props/soil_grid.gd" id="4_soil_grid"]
+[ext_resource type="PackedScene" path="res://scenes/test_player.tscn" id="5_player"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
+size = 50.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
+size = Vector3(50, 0.1, 50)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
+albedo_color = Color(0.2, 0.35, 0.15, 1)
+
+[sub_resource type="Environment" id="Environment_test"]
+background_mode = 6
+ambient_light_source = 2
+
+[node name="TestProps" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_test")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 10, 20, 10)
+light_energy = 1.5
+shadow_enabled = true
+
+[node name="Ground" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("PlaneMesh_ground")
+surface_material_override/0 = SubResource("StandardMaterial3D_ground")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("BoxShape3D_ground")
+position = Vector3(0, -0.05, 0)
+
+[node name="SoilGrid" type="Node3D" parent="."]
+script = ExtResource("4_soil_grid")
+grid_width = 10
+grid_height = 10
+tile_size = 2.0
+initial_state = 1
+
+[node name="Props" type="Node3D" parent="."]
+
+[node name="PotIntact" parent="Props" instance=ExtResource("1_pot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, -5)
+
+[node name="PotCracked" parent="Props" instance=ExtResource("1_pot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -5)
+variant = 1
+
+[node name="PotTall" parent="Props" instance=ExtResource("1_pot")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0, -5)
+pot_height = 3.0
+
+[node name="PotRow" parent="Props" instance=ExtResource("1_pot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -8)
+
+[node name="PotRow2" parent="Props" instance=ExtResource("1_pot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, -8)
+
+[node name="PotRow3" parent="Props" instance=ExtResource("1_pot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, -8)
+
+[node name="TrellisBare" parent="Props" instance=ExtResource("2_trellis")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 0)
+
+[node name="TrellisVine" parent="Props" instance=ExtResource("2_trellis")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 0)
+has_vines = true
+
+[node name="TrellisStacked1" parent="Props" instance=ExtResource("2_trellis")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
+
+[node name="TrellisStacked2" parent="Props" instance=ExtResource("2_trellis")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 3)
+segments = 1
+
+[node name="TrellisStacked3" parent="Props" instance=ExtResource("2_trellis")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 3)
+segments = 1
+
+[node name="BasketChain" parent="Props" instance=ExtResource("3_basket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 3)
+suspension_type = 0
+
+[node name="BasketVine" parent="Props" instance=ExtResource("3_basket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 3)
+suspension_type = 1
+
+[node name="BasketBlight" parent="Props" instance=ExtResource("3_basket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, 3)
+soil_state = 0
+
+[node name="BasketBloom" parent="Props" instance=ExtResource("3_basket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 3)
+soil_state = 2
+
+[node name="VerticalPath" type="Node3D" parent="."]
+
+[node name="Anchor" type="Node3D" parent="VerticalPath"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 8, 10)
+
+[node name="BasketTarget" parent="VerticalPath" instance=ExtResource("3_basket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 6.5, 10)
+chain_length = 1.5
+
+[node name="TrellisBase" parent="VerticalPath" instance=ExtResource("2_trellis")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 8)
+
+[node name="TrellisMid" parent="VerticalPath" instance=ExtResource("2_trellis")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2, 8)
+
+[node name="TrellisTop" parent="VerticalPath" instance=ExtResource("2_trellis")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 4, 8)
+
+[node name="LandingPlatform" parent="VerticalPath" instance=ExtResource("1_pot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 12)
+pot_height = 1.5
+
+[node name="Player" parent="." instance=ExtResource("5_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 5)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 15, 12, 20)
+projection = 1
+size = 15.0
+near = 0.1
+far = 100.0
+visible = false
+
+[node name="Label" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -10)
+text = "Pollen Ranger - Props Test Scene
+Pots: Intact, Cracked (hide inside), Tall (scaled)
+Trellis: Bare, Vine-wrapped, Stacked (vertical path)
+Baskets: Chain/Vine suspension, Blight/Bloom soil states
+Vertical Path: Climb trellis -> Jump to basket -> Glide to pot"
+horizontal_alignment = 1
+pixel_size = 0.02

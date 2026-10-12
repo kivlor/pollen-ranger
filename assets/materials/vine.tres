@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "Vine"
+albedo_color = Color(0.2, 0.5, 0.15, 1.0)
+roughness = 0.7
+metallic = 0.0
