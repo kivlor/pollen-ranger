@@ -50,14 +50,47 @@ assets/
   audio/      # SFX and music
 ```
 
+## Running and Testing
+
+**CRITICAL: Always verify the game launches before considering any work complete.**
+
+### Launch the Game
+```bash
+flatpak run org.godotengine.Godot --path /home/kivlor/Code/pollen-ranger res://scenes/test_movement.tscn
+```
+
+This runs the game directly (not the editor). The main test scene is `test_movement.tscn`.
+
+### Before Marking Work Done
+1. **Run the game** using the command above
+2. **Check the terminal output** for errors:
+   - `SCRIPT ERROR` - Script has syntax or type errors
+   - `ERROR: Failed to load script` - Script couldn't compile
+   - `ERROR: referenced non-existent resource` - Missing file reference
+3. **Verify the game window opens** and is playable
+4. **Test the changed functionality** in-game
+
+### Common Issues
+- `Could not find type "X"` - Class not found, use `preload()` or remove type hint
+- `Member "X" redefined` - Trying to @export a property that already exists in parent class
+- `Can't create sub resource of type 'X'` - Invalid resource type (e.g., ConeMesh doesn't exist in Godot 4, use CylinderMesh or PrismMesh)
+- Missing icon.svg - Create a simple SVG in `assets/textures/icon.svg`
+
+### Opening the Editor (for scene editing)
+```bash
+flatpak run org.godotengine.Godot --path /home/kivlor/Code/pollen-ranger
+```
+
 ## What Agents Should Do
 
 - ✅ Implement mechanics that match the MDK + Metroid Prime feel
 - ✅ Add comments explaining intent and "feel" goals
+- ✅ **Run the game and verify it launches before marking work done**
 - ✅ Test in the provided test scenes
 - ✅ Keep performance in mind (target 60+ FPS)
 - ❌ Don't add realistic physics (we want game-feel, not simulation)
 - ❌ Don't make things too dark or grim — this is a garden, not a horror game
+- ❌ Don't mark work complete if there are script errors or the game won't launch
 
 ## References
 

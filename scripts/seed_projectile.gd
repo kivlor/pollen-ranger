@@ -15,7 +15,8 @@ extends RigidBody3D
 @export var launch_speed: float = 25.0
 
 ## Gravity effect - lower than normal for flatter trajectory
-@export var gravity_scale: float = 0.5
+## Note: Using RigidBody3D's built-in gravity_scale property
+## @export var gravity_scale: float = 0.5  # Already defined in RigidBody3D
 
 ## Linear drag for slight slowdown over distance
 @export var linear_drag: float = 0.3

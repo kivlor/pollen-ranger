@@ -17,8 +17,9 @@ rings = 4
 albedo_color = Color(0.3, 0.5, 0.25, 1)
 roughness = 0.8
 
-[sub_resource type="ConeMesh" id="ConeMesh_glider"]
-radius = 0.3
+[sub_resource type="CylinderMesh" id="CylinderMesh_glider"]
+top_radius = 0.0
+bottom_radius = 0.3
 height = 0.4
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_glider"]
@@ -61,5 +62,5 @@ position = Vector3(0, 0.3, 0)
 ## Placeholder: Simple cone representing unfurled dandelion parachute
 ## In production, would be a more complex dandelion fluff mesh
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
-mesh = SubResource("ConeMesh_glider")
+mesh = SubResource("CylinderMesh_glider")
 surface_material_override/0 = SubResource("StandardMaterial3D_glider")

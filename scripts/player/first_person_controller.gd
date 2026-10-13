@@ -59,8 +59,11 @@ extends CharacterBody3D
 @onready var _camera: Camera3D = $CameraPivot/Camera3D
 @onready var _camera_pivot: Node3D = $CameraPivot
 @onready var _collision: CollisionShape3D = $CollisionShape3D
-@onready var _glider: Glider = $Glider
+@onready var _glider: Node3D = $Glider  # Glider component - use duck typing
 @onready var _projectile_spawner: Node3D = $ProjectileSpawner
+
+## Preload the Glider script for type checking
+const GliderScript = preload("res://scripts/glider.gd")
 
 ## === STATE ===
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
