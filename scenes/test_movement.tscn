@@ -1,0 +1,215 @@
+[gd_scene load_steps=20 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/player/first_person_player.tscn" id="1_player"]
+[ext_resource type="PackedScene" path="res://scenes/props/pot.tscn" id="2_pot"]
+[ext_resource type="PackedScene" path="res://scenes/props/trellis.tscn" id="3_trellis"]
+[ext_resource type="PackedScene" path="res://scenes/props/hanging_basket.tscn" id="4_basket"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
+size = 100.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
+size = Vector3(100, 0.1, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
+albedo_color = Color(0.25, 0.35, 0.2, 1)
+roughness = 0.9
+
+[sub_resource type="Environment" id="Environment_test"]
+background_mode = 6
+ambient_light_source = 2
+ambient_light_color = Color(0.5, 0.6, 0.5, 1)
+ssao_enabled = true
+ssao_intensity = 0.5
+glow_enabled = true
+glow_intensity = 0.5
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_platform"]
+size = Vector3(2, 0.2, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_platform_low"]
+size = Vector3(2, 0.2, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_platform_low"]
+albedo_color = Color(0.4, 0.3, 0.2, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_platform_med"]
+size = Vector3(2, 0.2, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_platform_med"]
+albedo_color = Color(0.5, 0.35, 0.2, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_platform_high"]
+size = Vector3(3, 0.2, 3)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_platform_high"]
+albedo_color = Color(0.6, 0.4, 0.25, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall"]
+size = Vector3(10, 3, 0.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall"]
+size = Vector3(10, 3, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wall"]
+albedo_color = Color(0.7, 0.5, 0.3, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tower"]
+size = Vector3(2, 8, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tower"]
+size = Vector3(2, 8, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tower"]
+albedo_color = Color(0.55, 0.45, 0.3, 1)
+
+[node name="TestMovement" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_test")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 10, 20, 10)
+light_energy = 2.0
+shadow_enabled = true
+shadow_bias = 0.05
+
+[node name="Ground" type="StaticBody3D" parent="."]
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("PlaneMesh_ground")
+surface_material_override/0 = SubResource("StandardMaterial3D_ground")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("BoxShape3D_ground")
+position = Vector3(0, -0.05, 0)
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector3(0, 0.5, 0)
+
+[node name="Platforms" type="Node3D" parent="."]
+
+[node name="Platform_Low" type="StaticBody3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, 0)
+collision_layer = 2
+collision_mask = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Platforms/Platform_Low"]
+shape = SubResource("BoxShape3D_platform")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Platforms/Platform_Low"]
+mesh = SubResource("BoxMesh_platform_low")
+surface_material_override/0 = SubResource("StandardMaterial3D_platform_low")
+
+[node name="Platform_Medium" type="StaticBody3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.5, 0)
+collision_layer = 2
+collision_mask = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Platforms/Platform_Medium"]
+shape = SubResource("BoxShape3D_platform")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Platforms/Platform_Medium"]
+mesh = SubResource("BoxMesh_platform_med")
+surface_material_override/0 = SubResource("StandardMaterial3D_platform_med")
+
+[node name="Platform_High" type="StaticBody3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 5, 0)
+collision_layer = 2
+collision_mask = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Platforms/Platform_High"]
+shape = SubResource("BoxShape3D_platform")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Platforms/Platform_High"]
+mesh = SubResource("BoxMesh_platform_high")
+surface_material_override/0 = SubResource("StandardMaterial3D_platform_high")
+
+[node name="Target_Wall" type="StaticBody3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -10)
+collision_layer = 2
+collision_mask = 32
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Platforms/Target_Wall"]
+shape = SubResource("BoxShape3D_wall")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Platforms/Target_Wall"]
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("StandardMaterial3D_wall")
+
+[node name="Glide_Tower" type="StaticBody3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 4, 0)
+collision_layer = 2
+collision_mask = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Platforms/Glide_Tower"]
+shape = SubResource("BoxShape3D_tower")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Platforms/Glide_Tower"]
+mesh = SubResource("BoxMesh_tower")
+surface_material_override/0 = SubResource("StandardMaterial3D_tower")
+
+[node name="Props" type="Node3D" parent="."]
+
+[node name="Pot1" parent="Props" instance=ExtResource("2_pot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 5)
+
+[node name="Trellis1" parent="Props" instance=ExtResource("3_trellis")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 5)
+
+[node name="Basket1" parent="Props" instance=ExtResource("4_basket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 4, 0)
+
+[node name="Basket2" parent="Props" instance=ExtResource("4_basket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+
+[node name="Basket3" parent="Props" instance=ExtResource("4_basket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 6, 0)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Crosshair" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterDot" type="ColorRect" parent="UI/Crosshair"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 2.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0.8)
+
+[node name="Instructions" type="Label" parent="UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 350.0
+offset_bottom = 200.0
+text = "POLLEN RANGER - Test Movement
+
+Controls:
+  WASD: Move
+  Shift: Sprint  
+  Space: Jump
+  Mouse: Look
+  Left Click: Fire seed
+  G: Toggle glider (in air)
+  Esc: Toggle mouse"
+horizontal_alignment = 0
+vertical_alignment = 0
+autowrap_mode = 2

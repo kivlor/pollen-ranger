@@ -7,9 +7,12 @@ config_version=5
 
 config/name="Pollen Ranger"
 config/description="A thumb-sized scout purging the Blight from an overgrown greenhouse"
-run/main_scene="res://scenes/test_props.tscn"
+run/main_scene="res://scenes/test_movement.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://assets/textures/icon.svg"
+
+; Custom settings for player feel
+config/mouse_sensitivity=0.002
 
 [display]
 

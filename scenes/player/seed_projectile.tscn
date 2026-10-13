@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/seed_projectile.gd" id="1_projectile"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_seed"]
+## Small seed - you're thumb-sized, seeds are tiny
+radius = 0.03
+
+[sub_resource type="SphereMesh" id="SphereMesh_seed"]
+radius = 0.03
+height = 0.06
+radial_segments = 12
+rings = 6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_seed"]
+## Green seed capsule with slight glow potential
+albedo_color = Color(0.4, 0.7, 0.3, 1)
+emission_enabled = true
+emission = Color(0.2, 0.4, 0.15, 1)
+emission_energy = 0.5
+roughness = 0.3
+
+[node name="SeedProjectile" type="RigidBody3D"]
+collision_layer = 32
+collision_mask = 34
+script = ExtResource("1_projectile")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_seed")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_seed")
+surface_material_override/0 = SubResource("StandardMaterial3D_seed")
+
+[node name="Trail" type="Node3D" parent="."]
+## Trail effect placeholder - would use GPUParticles3D or LineEdit
+position = Vector3(0, 0, 0)
