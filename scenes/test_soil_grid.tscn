@@ -1,0 +1,60 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/props/soil_grid.gd" id="1_soil_grid"]
+
+[sub_resource type="Environment" id="Environment_test"]
+background_mode = 1
+background_color = Color(0.15, 0.15, 0.2, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.8, 0.8, 0.85, 1)
+
+[node name="TestSoilGrid" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_test")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 5, 10, 5)
+light_color = Color(1, 0.95, 0.9, 1)
+light_energy = 1.5
+shadow_enabled = true
+
+[node name="SoilGrid" type="Node3D" parent="."]
+script = ExtResource("1_soil_grid")
+grid_width = 10
+grid_height = 10
+tile_size = 1.0
+initial_blight_coverage = 0.7
+blight_spread_interval = 2.0
+blight_spread_chance = 0.15
+bloom_resistance = 0.8
+cleanse_threshold = 0.8
+
+[node name="TilesRoot" type="Node3D" parent="SoilGrid"]
+
+[node name="CameraMount" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 10)
+
+[node name="Camera3D" type="Camera3D" parent="CameraMount"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0)
+current = true
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="InstructionsLabel" type="Label" parent="UI"]
+anchors_preset = 1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 20.0
+offset_right = 300.0
+offset_bottom = 120.0
+grow_horizontal = 2
+text = "Soil Grid Test Scene
+
+- Click on BLIGHT (gray) tiles to cleanse them
+- Watch blight spread slowly over time
+- Console prints when 80%+ BLOOM achieved
+- Left-click shoots seed projectiles (needs player scene)"
+horizontal_alignment = 1
+autowrap_mode = 2

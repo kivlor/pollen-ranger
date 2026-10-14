@@ -50,7 +50,7 @@ var _trail_points: Array[Vector3] = []
 func _ready() -> void:
 	## Set up collision
 	collision_layer = 32  # Layer 5: projectile
-	collision_mask = 2 | 32  # Layer 2: environment, Layer 5: blight
+	collision_mask = 2 | 16  # Layer 2: environment, Layer 4: blight/soil
 	
 	## Configure physics
 	gravity_scale = gravity_scale
@@ -120,12 +120,43 @@ func _on_body_entered(body: Node) -> void:
 	if body.has_method("take_damage"):
 		## Hit an enemy (blight)
 		body.take_damage(damage)
+	elif _try_cleanse_soil(body):
+		## Hit a soil grid tile - cleanse it
+		pass
 	elif body.is_in_group("environment"):
 		## Hit environment - play subtle impact
 		pass
 	
 	## Despawn the seed
 	_despawn()
+
+
+func _try_cleanse_soil(body: Node) -> bool:
+	"""Try to find a soil grid and cleanse the tile. Returns true if successful."""
+	## Check if this body is part of a soil grid tile
+	var grid_pos: Variant = null
+	var soil_grid: SoilGrid = null
+	
+	# Body might have grid_pos set directly (SoilTileBody)
+	if "grid_pos" in body:
+		grid_pos = body.grid_pos
+	
+	# Find the SoilGrid ancestor
+	var ancestor: Node = body
+	while ancestor:
+		if ancestor is SoilGrid:
+			soil_grid = ancestor
+			break
+		ancestor = ancestor.get_parent()
+	
+	# If we found both, cleanse the tile
+	if soil_grid and grid_pos != null:
+		var pos: Vector2i = grid_pos
+		if soil_grid.get_tile_state(pos) == SoilGrid.TileState.BLIGHT:
+			soil_grid.cleanse_tile(pos)
+			return true
+	
+	return false
 
 
 func _spawn_impact_particles() -> void:
