@@ -1,8 +1,5 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3]
 
-## Reusable Blight overlay material - assign as material_overlay on any
-## MeshInstance3D, or let BlightSurface manage it at runtime.
-
 [ext_resource type="Shader" path="res://shaders/blight.gdshader" id="1_shader"]
 
 [resource]

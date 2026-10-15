@@ -123,6 +123,9 @@ func _on_body_entered(body: Node) -> void:
 	elif _try_cleanse_soil(body):
 		## Hit a soil grid tile - cleanse it
 		pass
+	elif _try_cleanse_blight_surface(body):
+		## Hit a blighted prop - purify it (satisfying burst!)
+		pass
 	elif body.is_in_group("environment"):
 		## Hit environment - play subtle impact
 		pass
@@ -156,6 +159,18 @@ func _try_cleanse_soil(body: Node) -> bool:
 			soil_grid.cleanse_tile(pos)
 			return true
 	
+	return false
+
+
+func _try_cleanse_blight_surface(body: Node) -> bool:
+	"""Try to find a BlightSurface on the hit prop and purge it."""
+	var ancestor: Node = body
+	while ancestor:
+		for child in ancestor.get_children():
+			if child is BlightSurface and child.is_blighted():
+				child.cleanse()
+				return true
+		ancestor = ancestor.get_parent()
 	return false
 
 

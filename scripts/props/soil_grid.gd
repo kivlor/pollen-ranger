@@ -45,7 +45,7 @@ enum TileState {
 @export var cleanse_threshold: float = 0.8
 
 ## === NODE REFERENCES ===
-@onready var _tiles_root: Node3D = $TilesRoot
+var _tiles_root: Node3D  # resolved in _ready (created if missing)
 
 ## === STATE ===
 var _tile_states: Array[Array] = []  # 2D array of TileState
@@ -74,6 +74,14 @@ func _ready() -> void:
 	_material_blight = preload("res://assets/materials/soil_blight.tres")
 	_material_neutral = preload("res://assets/materials/soil.tres")
 	_material_bloom = preload("res://assets/materials/soil_bloom.tres")
+	
+	# Self-heal: scenes that place a SoilGrid script on a bare Node3D
+	# (e.g. test_props.tscn) won't have a TilesRoot child - create one.
+	if get_node_or_null("TilesRoot") == null:
+		var tiles_root := Node3D.new()
+		tiles_root.name = "TilesRoot"
+		add_child(tiles_root)
+	_tiles_root = get_node_or_null("TilesRoot")
 	
 	_initialize_grid()
 	_generate_visual_grid()
