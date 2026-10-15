@@ -268,6 +268,24 @@ func _fire_seed_projectile() -> void:
 	## Optional: play shoot sound or visual feedback
 
 
+## Restore full health (used by level respawn logic)
+func heal_to_full() -> void:
+	current_health = max_health
+	health_changed.emit(current_health, max_health)
+
+
+## Respawn at a position: restore health, zero velocity, teleport.
+## Used by levels with spawn points / kill planes (Entrance Conservatory).
+func respawn_at(new_position: Vector3) -> void:
+	heal_to_full()
+	_hurt_timer = 0.0
+	velocity = Vector3.ZERO
+	global_position = new_position
+	## Retract the glider so a mid-air death doesn't respawn us floating
+	if _glider.is_deployed:
+		_glider.retract()
+
+
 ## Public accessor for camera (useful for UI, cutscenes, etc.)
 func get_camera() -> Camera3D:
 	return _camera

@@ -38,8 +38,11 @@ Built in **Godot 4.7**. Currently in early development.
 git clone git@github.com:kivlor/pollen-ranger.git
 cd pollen-ranger
 
-# Open in Godot Editor
+# Run the game (main scene: Entrance Conservatory tutorial level)
 godot --path .
+
+# Or open a specific test scene
+godot --path . res://scenes/test_movement.tscn
 ```
 
 ### Requirements

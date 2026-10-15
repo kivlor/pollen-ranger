@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://scripts/props/hanging_basket.gd" id="1_script"]
 [ext_resource type="Material" path="res://assets/materials/basket_wicker.tres" id="2_wicker"]
@@ -30,6 +30,10 @@ rings = 1
 [sub_resource type="BoxShape3D" id="BoxShape3D_landing"]
 size = Vector3(1.0, 0.3, 1.0)
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_basket"]
+radius = 0.55
+height = 0.25
+
 [node name="HangingBasket" type="Node3D"]
 script = ExtResource("1_script")
 
@@ -60,6 +64,14 @@ position = Vector3(0, -1.5, 0)
 [node name="SoilMesh" type="MeshInstance3D" parent="."]
 mesh = SubResource("CylinderMesh_soil")
 surface_material_override/0 = ExtResource("5_soil")
+position = Vector3(0, -1.2, 0)
+
+[node name="CollisionBody" type="StaticBody3D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape3D" parent="CollisionBody"]
+shape = SubResource("CylinderShape3D_basket")
 position = Vector3(0, -1.2, 0)
 
 [node name="LandingArea" type="Area3D" parent="."]

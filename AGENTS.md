@@ -60,6 +60,23 @@ flatpak run org.godotengine.Godot --path /home/kivlor/Code/pollen-ranger res://s
 ```
 
 This runs the game directly (not the editor). The main test scene is `test_movement.tscn`.
+The game's main scene is the Entrance Conservatory level:
+
+```bash
+flatpak run org.godotengine.Godot --path /home/kivlor/Code/pollen-ranger
+```
+
+### Automated level smoke test
+
+A headless input-simulation smoke test covers the Entrance Conservatory
+(movement, jump, seed fire, target pop, kill-plane respawn, glider descent):
+
+```bash
+flatpak run org.godotengine.Godot --headless --path /home/kivlor/Code/pollen-ranger \
+    -s res://scripts/dev/smoke_test_level.gd
+```
+
+It prints `PASS`/`FAIL` per check and exits 0 on success.
 
 ### Before Marking Work Done
 1. **Run the game** using the command above

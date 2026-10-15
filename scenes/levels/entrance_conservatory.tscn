@@ -1,0 +1,959 @@
+[gd_scene load_steps=76 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/entrance_conservatory.gd" id="1_level"]
+[ext_resource type="PackedScene" path="res://scenes/player/first_person_player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/props/pot.tscn" id="3_pot"]
+[ext_resource type="PackedScene" path="res://scenes/props/trellis.tscn" id="4_trellis"]
+[ext_resource type="PackedScene" path="res://scenes/props/hanging_basket.tscn" id="5_basket"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/blighted_grub.tscn" id="6_grub"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/blighted_moth.tscn" id="7_moth"]
+[ext_resource type="PackedScene" path="res://scenes/props/soil_grid.tscn" id="8_soilgrid"]
+[ext_resource type="PackedScene" path="res://scenes/props/target_dummy.tscn" id="9_target"]
+[ext_resource type="PackedScene" path="res://scenes/ui/tutorial_prompt.tscn" id="10_prompt"]
+[ext_resource type="PackedScene" path="res://scenes/effects/blight_motes.tscn" id="11_motes"]
+[ext_resource type="Material" path="res://assets/materials/soil.tres" id="12_soil"]
+[ext_resource type="Material" path="res://assets/materials/wood.tres" id="13_wood"]
+[ext_resource type="Material" path="res://assets/materials/terracotta.tres" id="14_terra"]
+[ext_resource type="Material" path="res://assets/materials/terracotta_cracked.tres" id="15_terra_cracked"]
+[ext_resource type="Material" path="res://assets/materials/glass.tres" id="16_glass"]
+[ext_resource type="Material" path="res://assets/materials/soil_blight.tres" id="17_soil_blight"]
+[ext_resource type="Script" path="res://scripts/props/blight_surface.gd" id="18_blightsurface"]
+
+[sub_resource type="Environment" id="Environment_level"]
+background_mode = 1
+background_color = Color(0.12, 0.16, 0.14, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.55, 0.65, 0.55, 1)
+ambient_light_energy = 1.1
+ssao_enabled = true
+ssao_intensity = 0.6
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.1
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.02
+volumetric_fog_anisotropy = 0.7
+volumetric_fog_albedo = Color(1, 0.95, 0.85, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_floor"]
+size = Vector3(36, 0.2, 124)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(36, 0.2, 124)
+
+[sub_resource type="BoxMesh" id="BoxMesh_path"]
+size = Vector3(2.4, 0.05, 3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wallbase"]
+size = Vector3(0.6, 3, 124)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wallbase"]
+size = Vector3(0.6, 3, 124)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wallglass"]
+size = Vector3(0.15, 12, 124)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wallglass"]
+size = Vector3(0.15, 12, 124)
+
+[sub_resource type="BoxMesh" id="BoxMesh_southbase"]
+size = Vector3(36, 3, 0.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_southbase"]
+size = Vector3(36, 3, 0.6)
+
+[sub_resource type="BoxMesh" id="BoxMesh_southglass"]
+size = Vector3(36, 12, 0.15)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_southglass"]
+size = Vector3(36, 12, 0.15)
+
+[sub_resource type="BoxMesh" id="BoxMesh_northwall"]
+size = Vector3(36, 15, 0.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_northwall"]
+size = Vector3(36, 15, 0.6)
+
+[sub_resource type="BoxMesh" id="BoxMesh_roofglass"]
+size = Vector3(18, 0.15, 22)
+
+[sub_resource type="BoxMesh" id="BoxMesh_roofbeam"]
+size = Vector3(0.4, 0.5, 124)
+
+[sub_resource type="BoxMesh" id="BoxMesh_crossbeam"]
+size = Vector3(36, 0.3, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_roofcoll"]
+size = Vector3(36, 0.3, 124)
+
+[sub_resource type="BoxMesh" id="BoxMesh_shard"]
+size = Vector3(3, 0.1, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_step1"]
+size = Vector3(3, 0.8, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_step1"]
+size = Vector3(3, 0.8, 3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_step2"]
+size = Vector3(3, 1.4, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_step2"]
+size = Vector3(3, 1.4, 3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_step3"]
+size = Vector3(2.5, 2, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_step3"]
+size = Vector3(2.5, 2, 2.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_step4"]
+size = Vector3(3, 2.4, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_step4"]
+size = Vector3(3, 2.4, 3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_workbench"]
+size = Vector3(3, 1.2, 1.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_workbench"]
+size = Vector3(3, 1.2, 1.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tstep1"]
+size = Vector3(2, 1.2, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tstep1"]
+size = Vector3(2, 1.2, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tstep2"]
+size = Vector3(2, 2.4, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tstep2"]
+size = Vector3(2, 2.4, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tstep3"]
+size = Vector3(2, 3.6, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tstep3"]
+size = Vector3(2, 3.6, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tstep4"]
+size = Vector3(2, 4.8, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tstep4"]
+size = Vector3(2, 4.8, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_platform"]
+size = Vector3(4, 0.5, 5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_platform"]
+size = Vector3(4, 0.5, 5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_rafter"]
+size = Vector3(0.4, 0.4, 14)
+
+[sub_resource type="BoxMesh" id="BoxMesh_firebench"]
+size = Vector3(3, 1, 1.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_firebench"]
+size = Vector3(3, 1, 1.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_pillar"]
+size = Vector3(1.5, 8, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pillar"]
+size = Vector3(1.5, 8, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_lintel"]
+size = Vector3(8.5, 1.5, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_doorpanel"]
+size = Vector3(3.2, 7, 0.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_doorpanel"]
+size = Vector3(3.2, 7, 0.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_overgrowth"]
+size = Vector3(1.5, 3, 0.1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_blightpatch"]
+size = Vector3(7, 0.05, 5)
+
+[sub_resource type="SphereMesh" id="SphereMesh_lantern"]
+radius = 0.14
+height = 0.28
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lantern"]
+albedo_color = Color(1, 0.85, 0.6, 1)
+emission_enabled = true
+emission = Color(1, 0.85, 0.6, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_lanternchain"]
+top_radius = 0.02
+bottom_radius = 0.02
+height = 7.0
+radial_segments = 6
+rings = 1
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_ray_big"]
+top_radius = 3.5
+bottom_radius = 5.5
+height = 15.0
+radial_segments = 12
+rings = 1
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_ray_small"]
+top_radius = 1.2
+bottom_radius = 2.2
+height = 15.0
+radial_segments = 10
+rings = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_godray"]
+transparency = 1
+shading_mode = 0
+blend_mode = 1
+albedo_color = Color(1, 0.95, 0.78, 0.07)
+cull_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_frame"]
+albedo_color = Color(0.72, 0.78, 0.68, 1)
+roughness = 0.7
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_killzone"]
+size = Vector3(60, 2, 160)
+
+[node name="EntranceConservatory" type="Node3D"]
+script = ExtResource("1_level")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_level")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.8192, -0.4394, 0.3687, 0, 0.6428, 0.766, -0.5736, -0.6275, 0.5266, 6, 24, -50)
+light_color = Color(1, 0.94, 0.82, 1)
+light_energy = 2.2
+shadow_enabled = true
+shadow_bias = 0.04
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 6)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 6)
+
+[node name="KillZone" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -12, -50)
+collision_layer = 0
+collision_mask = 1
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="KillZone"]
+shape = SubResource("BoxShape3D_killzone")
+
+[node name="Architecture" type="Node3D" parent="."]
+
+[node name="Floor" type="StaticBody3D" parent="Architecture" groups=["environment"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, -50)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Architecture/Floor"]
+mesh = SubResource("BoxMesh_floor")
+surface_material_override/0 = ExtResource("12_soil")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Architecture/Floor"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="PathStone1" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_path")
+surface_material_override/0 = ExtResource("14_terra")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, -4)
+
+[node name="PathStone2" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_path")
+surface_material_override/0 = ExtResource("14_terra")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, -29)
+
+[node name="PathStone3" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_path")
+surface_material_override/0 = ExtResource("14_terra")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, -58)
+
+[node name="PathStone4" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_path")
+surface_material_override/0 = ExtResource("14_terra")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, -77)
+
+[node name="PathStone5" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_path")
+surface_material_override/0 = ExtResource("14_terra")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, -96)
+
+[node name="WestWallBase" type="StaticBody3D" parent="Architecture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.3, 1.5, -50)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Architecture/WestWallBase"]
+mesh = SubResource("BoxMesh_wallbase")
+surface_material_override/0 = ExtResource("15_terra_cracked")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Architecture/WestWallBase"]
+shape = SubResource("BoxShape3D_wallbase")
+
+[node name="EastWallBase" type="StaticBody3D" parent="Architecture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.3, 1.5, -50)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Architecture/EastWallBase"]
+mesh = SubResource("BoxMesh_wallbase")
+surface_material_override/0 = ExtResource("15_terra_cracked")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Architecture/EastWallBase"]
+shape = SubResource("BoxShape3D_wallbase")
+
+[node name="WestWallGlass" type="StaticBody3D" parent="Architecture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.3, 9, -50)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Architecture/WestWallGlass"]
+mesh = SubResource("BoxMesh_wallglass")
+surface_material_override/0 = ExtResource("16_glass")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Architecture/WestWallGlass"]
+shape = SubResource("BoxShape3D_wallglass")
+
+[node name="EastWallGlass" type="StaticBody3D" parent="Architecture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.3, 9, -50)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Architecture/EastWallGlass"]
+mesh = SubResource("BoxMesh_wallglass")
+surface_material_override/0 = ExtResource("16_glass")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Architecture/EastWallGlass"]
+shape = SubResource("BoxShape3D_wallglass")
+
+[node name="SouthWallBase" type="StaticBody3D" parent="Architecture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 10.3)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Architecture/SouthWallBase"]
+mesh = SubResource("BoxMesh_southbase")
+surface_material_override/0 = ExtResource("15_terra_cracked")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Architecture/SouthWallBase"]
+shape = SubResource("BoxShape3D_southbase")
+
+[node name="SouthWallGlass" type="StaticBody3D" parent="Architecture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, 10.3)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Architecture/SouthWallGlass"]
+mesh = SubResource("BoxMesh_southglass")
+surface_material_override/0 = ExtResource("16_glass")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Architecture/SouthWallGlass"]
+shape = SubResource("BoxShape3D_southglass")
+
+[node name="NorthWall" type="StaticBody3D" parent="Architecture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, -110.3)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Architecture/NorthWall"]
+mesh = SubResource("BoxMesh_northwall")
+surface_material_override/0 = ExtResource("15_terra_cracked")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Architecture/NorthWall"]
+shape = SubResource("BoxShape3D_northwall")
+
+[node name="RoofCollision" type="StaticBody3D" parent="Architecture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.3, -50)
+collision_layer = 2
+collision_mask = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Architecture/RoofCollision"]
+shape = SubResource("BoxShape3D_roofcoll")
+
+[node name="RoofGlass1" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_roofglass")
+surface_material_override/0 = ExtResource("16_glass")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 15, -2)
+
+[node name="RoofGlass2" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_roofglass")
+surface_material_override/0 = ExtResource("16_glass")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 15, -22)
+
+[node name="RoofGlass3" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_roofglass")
+surface_material_override/0 = ExtResource("16_glass")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 15, -42)
+
+[node name="RoofGlass4" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_roofglass")
+surface_material_override/0 = ExtResource("16_glass")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 15, -62)
+
+[node name="RoofGlass5" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_roofglass")
+surface_material_override/0 = ExtResource("16_glass")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 15, -82)
+
+[node name="RoofGlass6" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_roofglass")
+surface_material_override/0 = ExtResource("16_glass")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 15, -102)
+
+[node name="RoofGlass7" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_roofglass")
+surface_material_override/0 = ExtResource("16_glass")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 15, -22)
+
+[node name="RoofGlass8" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_roofglass")
+surface_material_override/0 = ExtResource("16_glass")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 15, -42)
+
+[node name="RoofGlass9" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_roofglass")
+surface_material_override/0 = ExtResource("16_glass")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 15, -62)
+
+[node name="RoofGlass10" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_roofglass")
+surface_material_override/0 = ExtResource("16_glass")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 15, -102)
+
+[node name="Shard1" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_shard")
+surface_material_override/0 = ExtResource("16_glass")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 14.85, -4)
+
+[node name="Shard2" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_shard")
+surface_material_override/0 = ExtResource("16_glass")
+transform = Transform3D(1.3, 0, 0, 0, 1, 0, 0, 0, 1, -12.5, 14.85, -43.5)
+
+[node name="Shard3" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_shard")
+surface_material_override/0 = ExtResource("16_glass")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.2, 6, 14.85, -83.5)
+
+[node name="RidgeBeamWest" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_roofbeam")
+surface_material_override/0 = ExtResource("13_wood")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 15.2, -50)
+
+[node name="RidgeBeamCenter" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_roofbeam")
+surface_material_override/0 = ExtResource("13_wood")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.2, -50)
+
+[node name="RidgeBeamEast" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_roofbeam")
+surface_material_override/0 = ExtResource("13_wood")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 15.2, -50)
+
+[node name="CrossBeam1" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_crossbeam")
+surface_material_override/0 = ExtResource("13_wood")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.8, -2)
+
+[node name="CrossBeam2" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_crossbeam")
+surface_material_override/0 = ExtResource("13_wood")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.8, -22)
+
+[node name="CrossBeam3" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_crossbeam")
+surface_material_override/0 = ExtResource("13_wood")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.8, -42)
+
+[node name="CrossBeam4" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_crossbeam")
+surface_material_override/0 = ExtResource("13_wood")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.8, -62)
+
+[node name="CrossBeam5" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_crossbeam")
+surface_material_override/0 = ExtResource("13_wood")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.8, -82)
+
+[node name="CrossBeam6" type="MeshInstance3D" parent="Architecture"]
+mesh = SubResource("BoxMesh_crossbeam")
+surface_material_override/0 = ExtResource("13_wood")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.8, -102)
+
+[node name="GodRays" type="Node3D" parent="."]
+
+[node name="RaySpawn" type="MeshInstance3D" parent="GodRays"]
+mesh = SubResource("CylinderMesh_ray_big")
+surface_material_override/0 = SubResource("StandardMaterial3D_godray")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 7.4, -2)
+
+[node name="RayTower" type="MeshInstance3D" parent="GodRays"]
+mesh = SubResource("CylinderMesh_ray_big")
+surface_material_override/0 = SubResource("StandardMaterial3D_godray")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 7.4, -42)
+
+[node name="RayArena" type="MeshInstance3D" parent="GodRays"]
+mesh = SubResource("CylinderMesh_ray_big")
+surface_material_override/0 = SubResource("StandardMaterial3D_godray")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 7.4, -82)
+
+[node name="RayRange" type="MeshInstance3D" parent="GodRays"]
+mesh = SubResource("CylinderMesh_ray_small")
+surface_material_override/0 = SubResource("StandardMaterial3D_godray")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 7.4, -64)
+
+[node name="SpawnArea" type="Node3D" parent="."]
+
+[node name="WorkBench" type="StaticBody3D" parent="SpawnArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0.6, -2)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SpawnArea/WorkBench"]
+mesh = SubResource("BoxMesh_workbench")
+surface_material_override/0 = ExtResource("13_wood")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SpawnArea/WorkBench"]
+shape = SubResource("BoxShape3D_workbench")
+
+[node name="Pot_West" parent="SpawnArea" instance=ExtResource("3_pot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, 2)
+
+[node name="Pot_East" parent="SpawnArea" instance=ExtResource("3_pot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, -4)
+
+[node name="Trellis_Decor" parent="SpawnArea" instance=ExtResource("4_trellis")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11, 0, -3)
+has_vines = true
+
+[node name="Prompt_Move" parent="SpawnArea" instance=ExtResource("10_prompt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 2)
+message = "Move: WASD
+Look: Mouse · Sprint: SHIFT"
+trigger_size = Vector3(7, 3, 5)
+
+[node name="JumpCourse" type="Node3D" parent="."]
+
+[node name="Prompt_Jump" parent="JumpCourse" instance=ExtResource("10_prompt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, -8)
+message = "Jump: SPACE
+Hop across the pots — the soil is forgiving"
+trigger_size = Vector3(6, 3, 4)
+
+[node name="Step1" type="StaticBody3D" parent="JumpCourse"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, -10.5)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="JumpCourse/Step1"]
+mesh = SubResource("BoxMesh_step1")
+surface_material_override/0 = ExtResource("13_wood")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="JumpCourse/Step1"]
+shape = SubResource("BoxShape3D_step1")
+
+[node name="Step2" type="StaticBody3D" parent="JumpCourse"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0.7, -14)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="JumpCourse/Step2"]
+mesh = SubResource("BoxMesh_step2")
+surface_material_override/0 = ExtResource("13_wood")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="JumpCourse/Step2"]
+shape = SubResource("BoxShape3D_step2")
+
+[node name="Pot_Jump1" parent="JumpCourse" instance=ExtResource("3_pot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -17.5)
+
+[node name="Step3" type="StaticBody3D" parent="JumpCourse"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 1, -21.5)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="JumpCourse/Step3"]
+mesh = SubResource("BoxMesh_step3")
+surface_material_override/0 = ExtResource("13_wood")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="JumpCourse/Step3"]
+shape = SubResource("BoxShape3D_step3")
+
+[node name="Step4" type="StaticBody3D" parent="JumpCourse"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.2, -25.5)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="JumpCourse/Step4"]
+mesh = SubResource("BoxMesh_step4")
+surface_material_override/0 = ExtResource("13_wood")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="JumpCourse/Step4"]
+shape = SubResource("BoxShape3D_step4")
+
+[node name="Trellis_Shortcut" parent="JumpCourse" instance=ExtResource("4_trellis")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0, -16)
+has_vines = true
+
+[node name="Pot_East" parent="JumpCourse" instance=ExtResource("3_pot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -20)
+variant = 1
+
+[node name="Pot_West" parent="JumpCourse" instance=ExtResource("3_pot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, -24)
+variant = 1
+
+[node name="GlideTower" type="Node3D" parent="."]
+
+[node name="Prompt_Tower" parent="GlideTower" instance=ExtResource("10_prompt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, -31)
+message = "The rafter tower — climb the steps!
+(Gliding comes at the top)"
+trigger_size = Vector3(6, 3, 4)
+
+[node name="TowerStep1" type="StaticBody3D" parent="GlideTower"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.6, -33)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GlideTower/TowerStep1"]
+mesh = SubResource("BoxMesh_tstep1")
+surface_material_override/0 = ExtResource("13_wood")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GlideTower/TowerStep1"]
+shape = SubResource("BoxShape3D_tstep1")
+
+[node name="TowerStep2" type="StaticBody3D" parent="GlideTower"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.2, -36)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GlideTower/TowerStep2"]
+mesh = SubResource("BoxMesh_tstep2")
+surface_material_override/0 = ExtResource("13_wood")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GlideTower/TowerStep2"]
+shape = SubResource("BoxShape3D_tstep2")
+
+[node name="TowerStep3" type="StaticBody3D" parent="GlideTower"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.8, -39)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GlideTower/TowerStep3"]
+mesh = SubResource("BoxMesh_tstep3")
+surface_material_override/0 = ExtResource("13_wood")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GlideTower/TowerStep3"]
+shape = SubResource("BoxShape3D_tstep3")
+
+[node name="TowerStep4" type="StaticBody3D" parent="GlideTower"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 2.4, -41.5)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GlideTower/TowerStep4"]
+mesh = SubResource("BoxMesh_tstep4")
+surface_material_override/0 = ExtResource("13_wood")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GlideTower/TowerStep4"]
+shape = SubResource("BoxShape3D_tstep4")
+
+[node name="TowerPlatform" type="StaticBody3D" parent="GlideTower"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, -40.5)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GlideTower/TowerPlatform"]
+mesh = SubResource("BoxMesh_platform")
+surface_material_override/0 = ExtResource("13_wood")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GlideTower/TowerPlatform"]
+shape = SubResource("BoxShape3D_platform")
+
+[node name="Pot_Tower1" parent="GlideTower" instance=ExtResource("3_pot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, -37)
+
+[node name="Pot_Tower2" parent="GlideTower" instance=ExtResource("3_pot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, -44)
+variant = 1
+
+[node name="Blight" type="Node" parent="GlideTower/Pot_Tower2"]
+script = ExtResource("18_blightsurface")
+corruption = 0.7
+
+[node name="RafterBeam" type="MeshInstance3D" parent="GlideTower"]
+mesh = SubResource("BoxMesh_rafter")
+surface_material_override/0 = ExtResource("13_wood")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, -48)
+
+[node name="Basket_G1" parent="GlideTower" instance=ExtResource("5_basket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.05, -46)
+sway_amount = 0.15
+
+[node name="Basket_G2" parent="GlideTower" instance=ExtResource("5_basket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.05, -50)
+sway_amount = 0.15
+
+[node name="Basket_G3" parent="GlideTower" instance=ExtResource("5_basket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.05, -54)
+sway_amount = 0.15
+
+[node name="Moth_Glide" parent="GlideTower" instance=ExtResource("7_moth")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 5.5, -50)
+patrol_height = 5.0
+
+[node name="Prompt_Glide" parent="GlideTower" instance=ExtResource("10_prompt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.2, -40)
+message = "Glider: press G mid-air
+Steer with WASD · Land on the baskets"
+trigger_size = Vector3(4, 3, 5)
+
+[node name="TargetRange" type="Node3D" parent="."]
+
+[node name="Prompt_Shoot" parent="TargetRange" instance=ExtResource("10_prompt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, -60)
+message = "Dandelion Sniper
+LEFT CLICK: fire · RIGHT CLICK: aim
+Pop the blight buds!"
+trigger_size = Vector3(8, 3, 5)
+
+[node name="FiringBench" type="StaticBody3D" parent="TargetRange"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -62)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TargetRange/FiringBench"]
+mesh = SubResource("BoxMesh_firebench")
+surface_material_override/0 = ExtResource("13_wood")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TargetRange/FiringBench"]
+shape = SubResource("BoxShape3D_firebench")
+
+[node name="Target1" parent="TargetRange" instance=ExtResource("9_target")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, -66)
+
+[node name="Target2" parent="TargetRange" instance=ExtResource("9_target")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -69)
+
+[node name="Target3" parent="TargetRange" instance=ExtResource("9_target")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, -66)
+
+[node name="Pot_Target" parent="TargetRange" instance=ExtResource("3_pot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -73)
+
+[node name="Target4" parent="TargetRange" instance=ExtResource("9_target")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -73)
+
+[node name="GrubArena" type="Node3D" parent="."]
+
+[node name="Prompt_Grub" parent="GrubArena" instance=ExtResource("10_prompt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, -78)
+message = "A Blighted Grub!
+One seed purges it — don't let it touch you"
+trigger_size = Vector3(8, 3, 5)
+
+[node name="SoilPatch" parent="GrubArena" instance=ExtResource("8_soilgrid")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, -85)
+grid_width = 6
+grid_height = 6
+tile_size = 2.0
+initial_blight_coverage = 0.55
+blight_spread_interval = 6.0
+
+[node name="Grub_1" parent="GrubArena" instance=ExtResource("6_grub")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.02, -83)
+patrol_distance = 4.0
+
+[node name="Grub_2" parent="GrubArena" instance=ExtResource("6_grub")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 2.5, 0.02, -87)
+patrol_distance = 5.0
+
+[node name="Pot_Arena1" parent="GrubArena" instance=ExtResource("3_pot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -80)
+variant = 1
+
+[node name="Blight" type="Node" parent="GrubArena/Pot_Arena1"]
+script = ExtResource("18_blightsurface")
+corruption = 0.7
+
+[node name="Trellis_Arena" parent="GrubArena" instance=ExtResource("4_trellis")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, -88)
+has_vines = true
+
+[node name="ExitDoor" type="Node3D" parent="."]
+
+[node name="DoorPillarWest" type="StaticBody3D" parent="ExitDoor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 4, -108.5)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ExitDoor/DoorPillarWest"]
+mesh = SubResource("BoxMesh_pillar")
+surface_material_override/0 = ExtResource("15_terra_cracked")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ExitDoor/DoorPillarWest"]
+shape = SubResource("BoxShape3D_pillar")
+
+[node name="DoorPillarEast" type="StaticBody3D" parent="ExitDoor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 4, -108.5)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ExitDoor/DoorPillarEast"]
+mesh = SubResource("BoxMesh_pillar")
+surface_material_override/0 = ExtResource("15_terra_cracked")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ExitDoor/DoorPillarEast"]
+shape = SubResource("BoxShape3D_pillar")
+
+[node name="DoorLintel" type="MeshInstance3D" parent="ExitDoor"]
+mesh = SubResource("BoxMesh_lintel")
+surface_material_override/0 = ExtResource("15_terra_cracked")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.75, -108.5)
+
+[node name="DoorPanelWest" type="StaticBody3D" parent="ExitDoor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 3.5, -108.2)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ExitDoor/DoorPanelWest"]
+mesh = SubResource("BoxMesh_doorpanel")
+surface_material_override/0 = ExtResource("13_wood")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ExitDoor/DoorPanelWest"]
+shape = SubResource("BoxShape3D_doorpanel")
+
+[node name="DoorPanelEast" type="StaticBody3D" parent="ExitDoor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 3.5, -108.2)
+collision_layer = 2
+collision_mask = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ExitDoor/DoorPanelEast"]
+mesh = SubResource("BoxMesh_doorpanel")
+surface_material_override/0 = ExtResource("13_wood")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ExitDoor/DoorPanelEast"]
+shape = SubResource("BoxShape3D_doorpanel")
+
+[node name="VineOvergrowth" type="MeshInstance3D" parent="ExitDoor"]
+mesh = SubResource("BoxMesh_overgrowth")
+surface_material_override/0 = ExtResource("14_terra")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8, 5, -107.9)
+
+[node name="BlightPatch" type="MeshInstance3D" parent="ExitDoor"]
+mesh = SubResource("BoxMesh_blightpatch")
+surface_material_override/0 = ExtResource("17_soil_blight")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, -103.5)
+
+[node name="Blight" type="Node" parent="ExitDoor/BlightPatch"]
+script = ExtResource("18_blightsurface")
+corruption = 0.85
+mote_density = 0.5
+
+[node name="BlightMotes" parent="ExitDoor" instance=ExtResource("11_motes")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, -103.5)
+
+[node name="BlightGlow" type="OmniLight3D" parent="ExitDoor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -104)
+light_color = Color(0.65, 0.35, 0.95, 1)
+light_energy = 1.2
+omni_range = 7.0
+
+[node name="Prompt_Door" parent="ExitDoor" instance=ExtResource("10_prompt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, -102)
+message = "The Orchid Tropics lie beyond.
+This wing must be cleansed first — the door is sealed."
+trigger_size = Vector3(9, 3.5, 7)
+persist_after_exit = true
+
+[node name="Lanterns" type="Node3D" parent="."]
+
+[node name="Lantern_Spawn" type="Node3D" parent="Lanterns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 2)
+
+[node name="Chain" type="MeshInstance3D" parent="Lanterns/Lantern_Spawn"]
+mesh = SubResource("CylinderMesh_lanternchain")
+surface_material_override/0 = ExtResource("13_wood")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.5, 0)
+
+[node name="Bulb" type="MeshInstance3D" parent="Lanterns/Lantern_Spawn"]
+mesh = SubResource("SphereMesh_lantern")
+surface_material_override/0 = SubResource("StandardMaterial3D_lantern")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7, 0)
+
+[node name="Glow" type="OmniLight3D" parent="Lanterns/Lantern_Spawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7, 0)
+light_color = Color(1, 0.88, 0.7, 1)
+light_energy = 1.2
+omni_range = 10.0
+
+[node name="Lantern_Range" type="Node3D" parent="Lanterns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, -62)
+
+[node name="Chain" type="MeshInstance3D" parent="Lanterns/Lantern_Range"]
+mesh = SubResource("CylinderMesh_lanternchain")
+surface_material_override/0 = ExtResource("13_wood")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.5, 0)
+
+[node name="Bulb" type="MeshInstance3D" parent="Lanterns/Lantern_Range"]
+mesh = SubResource("SphereMesh_lantern")
+surface_material_override/0 = SubResource("StandardMaterial3D_lantern")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7, 0)
+
+[node name="Glow" type="OmniLight3D" parent="Lanterns/Lantern_Range"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7, 0)
+light_color = Color(1, 0.88, 0.7, 1)
+light_energy = 1.2
+omni_range = 10.0
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Title" type="Label" parent="UI"]
+offset_left = 12.0
+offset_top = 8.0
+offset_right = 600.0
+offset_bottom = 64.0
+text = "ENTRANCE CONSERVATORY
+Tutorial Wing — learn the ropes, ranger"
+
+[node name="ControlsHint" type="Label" parent="UI"]
+offset_left = 12.0
+offset_top = 68.0
+offset_right = 600.0
+offset_bottom = 88.0
+text = "WASD move · SPACE jump · SHIFT sprint · G glider · LMB shoot · RMB aim · ESC mouse"
+
+[node name="Crosshair" type="Control" parent="UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterDot" type="ColorRect" parent="UI/Crosshair"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 2.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0.8)

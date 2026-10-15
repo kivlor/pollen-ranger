@@ -7,7 +7,7 @@ config_version=5
 
 config/name="Pollen Ranger"
 config/description="A thumb-sized scout purging the Blight from an overgrown greenhouse"
-run/main_scene="res://scenes/test_movement.tscn"
+run/main_scene="res://scenes/levels/entrance_conservatory.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://assets/textures/icon.svg"
 

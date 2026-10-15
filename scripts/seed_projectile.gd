@@ -65,9 +65,10 @@ func _ready() -> void:
 	
 	## Connect to collision
 	body_entered.connect(_on_body_entered)
-	
-	## Store start position for range check
-	_start_position = global_position
+	## NOTE: _start_position is captured in initialize(), not here —
+	## the spawner positions the seed AFTER add_child, so a _ready-time
+	## capture always records the world origin (0,0,0) and the max-range
+	## check would instantly despawn seeds fired far from the origin.
 
 
 func _physics_process(delta: float) -> void:
@@ -94,6 +95,10 @@ func _physics_process(delta: float) -> void:
 func initialize(direction: Vector3, basis: Basis = Basis()) -> void:
 	## Set velocity
 	linear_velocity = direction.normalized() * launch_speed
+	
+	## Capture the fire point now that the spawner has positioned us
+	## (the max-range check measures from here)
+	_start_position = global_position
 	
 	## Orient the seed to face the direction of travel
 	#look_at(global_position + direction, Vector3.UP)
