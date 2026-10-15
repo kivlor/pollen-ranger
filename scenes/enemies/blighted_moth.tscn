@@ -1,0 +1,191 @@
+[gd_scene load_steps=19 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/blighted_moth.gd" id="1_moth"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_body"]
+albedo_color = Color(0.34, 0.31, 0.36, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wing"]
+albedo_color = Color(0.55, 0.53, 0.58, 0.88)
+transparency = 1
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_blight"]
+albedo_color = Color(0.55, 0.35, 0.85, 1)
+emission_enabled = true
+emission = Color(0.65, 0.35, 0.95, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_trail"]
+shading_mode = 0
+blend_mode = 1
+albedo_color = Color(0.65, 0.4, 0.95, 0.7)
+billboard_mode = 3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dust"]
+shading_mode = 0
+albedo_color = Color(0.6, 0.58, 0.62, 0.5)
+billboard_mode = 3
+
+[sub_resource type="SphereMesh" id="SphereMesh_body"]
+material = SubResource("StandardMaterial3D_body")
+radius = 0.14
+height = 0.55
+
+[sub_resource type="SphereMesh" id="SphereMesh_head"]
+material = SubResource("StandardMaterial3D_body")
+radius = 0.11
+height = 0.22
+
+[sub_resource type="SphereMesh" id="SphereMesh_wing"]
+material = SubResource("StandardMaterial3D_wing")
+radius = 0.38
+height = 0.03
+
+[sub_resource type="SphereMesh" id="SphereMesh_spot"]
+material = SubResource("StandardMaterial3D_blight")
+radius = 0.03
+height = 0.06
+
+[sub_resource type="SphereMesh" id="SphereMesh_eye"]
+material = SubResource("StandardMaterial3D_blight")
+radius = 0.022
+height = 0.044
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_antenna"]
+material = SubResource("StandardMaterial3D_body")
+top_radius = 0.004
+bottom_radius = 0.008
+height = 0.25
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_body"]
+radius = 0.32
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_damage"]
+radius = 0.5
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_trail"]
+emission_shape = 1
+emission_sphere_radius = 0.12
+spread = 30.0
+gravity = Vector3(0, -0.4, 0)
+initial_velocity_min = 0.2
+initial_velocity_max = 0.5
+damping_min = 1.0
+damping_max = 2.0
+scale_min = 0.7
+scale_max = 1.4
+
+[sub_resource type="SphereMesh" id="SphereMesh_trail"]
+material = SubResource("StandardMaterial3D_trail")
+radius = 0.025
+height = 0.05
+radial_segments = 6
+rings = 4
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_dust"]
+emission_shape = 1
+emission_sphere_radius = 0.45
+spread = 180.0
+gravity = Vector3(0, -0.3, 0)
+initial_velocity_min = 0.05
+initial_velocity_max = 0.2
+scale_min = 0.6
+scale_max = 1.2
+
+[sub_resource type="SphereMesh" id="SphereMesh_dust"]
+material = SubResource("StandardMaterial3D_dust")
+radius = 0.015
+height = 0.03
+radial_segments = 6
+rings = 4
+
+[node name="BlightedMoth" type="CharacterBody3D"]
+collision_layer = 32
+collision_mask = 18
+script = ExtResource("1_moth")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_body")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="Body" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.02, 0.05)
+mesh = SubResource("SphereMesh_body")
+
+[node name="Head" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, 0.04, -0.3)
+mesh = SubResource("SphereMesh_head")
+
+[node name="EyeL" type="MeshInstance3D" parent="Visual"]
+position = Vector3(-0.05, 0.1, -0.38)
+mesh = SubResource("SphereMesh_eye")
+
+[node name="EyeR" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0.05, 0.1, -0.38)
+mesh = SubResource("SphereMesh_eye")
+
+[node name="AntennaL" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(0.9, 0.3, 0, -0.3, 0.9, 0, 0, 0, 1, -0.04, 0.2, -0.36)
+mesh = SubResource("CylinderMesh_antenna")
+
+[node name="AntennaR" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(0.9, -0.3, 0, 0.3, 0.9, 0, 0, 0, 1, 0.04, 0.2, -0.36)
+mesh = SubResource("CylinderMesh_antenna")
+
+[node name="Spot1" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0.08, 0.1, -0.05)
+mesh = SubResource("SphereMesh_spot")
+
+[node name="Spot2" type="MeshInstance3D" parent="Visual"]
+position = Vector3(-0.08, 0.09, 0.12)
+mesh = SubResource("SphereMesh_spot")
+
+[node name="Spot3" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, 0.12, 0.28)
+mesh = SubResource("SphereMesh_spot")
+
+[node name="WingLPivot" type="Node3D" parent="Visual"]
+position = Vector3(-0.05, 0.1, 0)
+
+[node name="WingL" type="MeshInstance3D" parent="Visual/WingLPivot"]
+position = Vector3(-0.38, 0, 0)
+mesh = SubResource("SphereMesh_wing")
+
+[node name="WingRPivot" type="Node3D" parent="Visual"]
+position = Vector3(0.05, 0.1, 0)
+
+[node name="WingR" type="MeshInstance3D" parent="Visual/WingRPivot"]
+position = Vector3(0.38, 0, 0)
+mesh = SubResource("SphereMesh_wing")
+
+[node name="GlowLight" type="OmniLight3D" parent="Visual"]
+light_color = Color(0.65, 0.35, 0.95, 1)
+light_energy = 0.7
+omni_range = 1.6
+
+[node name="BlightTrail" type="GPUParticles3D" parent="."]
+position = Vector3(0, 0.1, 0.2)
+amount = 24
+lifetime = 1.2
+amount_ratio = 0.5
+local_coords = false
+process_material = SubResource("ParticleProcessMaterial_trail")
+draw_pass_1 = SubResource("SphereMesh_trail")
+
+[node name="WingDust" type="GPUParticles3D" parent="."]
+position = Vector3(0, 0.1, 0)
+amount = 12
+lifetime = 1.6
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_dust")
+draw_pass_1 = SubResource("SphereMesh_dust")
+
+[node name="DamageArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DamageArea"]
+shape = SubResource("SphereShape3D_damage")
