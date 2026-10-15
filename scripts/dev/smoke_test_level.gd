@@ -2,7 +2,9 @@ extends SceneTree
 ## Headless smoke test for the Entrance Conservatory level.
 ## Simulates player input through the Input singleton and verifies:
 ## grounded spawn, forward movement, jumping, seed firing, kill-plane
-## respawn, target popping, and glider descent from the rafter tower.
+## respawn, target popping, glider descent from the rafter tower, and the
+## health system: contact damage, i-frames, death state, checkpoint bloom
+## and respawn at the last checkpoint (issue #8).
 
 var t: float = 0.0
 var player: Node = null
@@ -132,10 +134,63 @@ func _tick() -> void:
 						"glider carried player forward (z=%f)" % player.global_position.z)
 				Input.action_release("move_forward")
 				stage = 16
-		16:  # Let it land, then wrap up
+		16:  # Let it land, then start health-system checks (issue #8)
 			if t > 11.0:
 				_check(player.is_on_floor(),
 						"player landed safely after glide (y=%f)" % player.global_position.y)
+				## Bloom the arena checkpoint by standing in its trigger
+				player.global_position = Vector3(0, 1.0, -76)
+				player.velocity = Vector3.ZERO
+				stage = 17
+		17:  # Checkpoint activation + first contact hit
+			if t > 11.8:
+				var level: Node = current_scene
+				_check(level._active_checkpoint != null
+						and level._active_checkpoint.is_active,
+						"arena checkpoint bloomed on player touch")
+				var hud: Node = level.get_node_or_null("UI/HealthHUD")
+				_check(hud != null and hud._max_health == player.max_health,
+						"health HUD present and tracking max health")
+				## Isolated damage-test spot so no grub interferes
+				player.global_position = Vector3(12, 1.0, 0)
+				player.velocity = Vector3.ZERO
+				player.take_damage(1, player.global_position + Vector3.FORWARD)
+				_check(player.current_health == player.max_health - 1,
+						"contact damage registered (%d/%d)"
+						% [player.current_health, player.max_health])
+				_check(hud._health == player.current_health,
+						"health HUD mirrors player health")
+				_check(player._hurt_timer > 0.0,
+						"i-frames active after hit")
+				stage = 18
+		18:  # i-frames: immediate second hit must be ignored
+			player.take_damage(1, player.global_position)
+			if t > 12.2:
+				_check(player.current_health == player.max_health - 1,
+						"i-frames blocked immediate second hit")
+				stage = 19
+		19:  # Lethal damage -> death state
+			if t > 12.4:
+				player._hurt_timer = 0.0
+				player.take_damage(5, player.global_position)
+				_check(player.current_health == 0,
+						"health reached zero on lethal hit")
+				_check(player.is_dead,
+						"player entered death state (input disabled, dissolving)")
+				stage = 20
+		20:  # Respawn at the last checkpoint
+			if t > 14.4:  # death at ~12.4 + RESPAWN_DELAY 1.2
+				_check(not player.is_dead,
+						"player respawned after death")
+				_check(player.current_health == player.max_health,
+						"health restored on death respawn")
+				_check(absf(player.global_position.z + 76.0) < 1.0
+						and player.global_position.y > -0.5,
+						"respawned at last checkpoint (pos=%s)"
+						% player.global_position)
+				stage = 21
+		21:  # Wrap up
+			if t > 14.6:
 				print("SMOKE TEST %s" % ("PASSED" if not failed else "FAILED"))
 				quit(0 if not failed else 1)
 

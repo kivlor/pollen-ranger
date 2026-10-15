@@ -1,7 +1,10 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scripts/player/first_person_controller.gd" id="1_controller"]
 [ext_resource type="Script" path="res://scripts/glider.gd" id="2_glider"]
+[ext_resource type="AudioStream" path="res://assets/audio/hurt.wav" id="3_hurt"]
+[ext_resource type="AudioStream" path="res://assets/audio/death.wav" id="4_death"]
+[ext_resource type="AudioStream" path="res://assets/audio/respawn.wav" id="5_respawn"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
 radius = 0.15
@@ -63,6 +66,20 @@ color = Color(0.8, 0.05, 0.08, 0)
 
 [node name="Glider" type="Node3D" parent="."]
 script = ExtResource("2_glider")
+
+[node name="SFX" type="Node" parent="."]
+
+[node name="Hurt" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("3_hurt")
+volume_db = -4.0
+
+[node name="Death" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("4_death")
+volume_db = -2.0
+
+[node name="Respawn" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("5_respawn")
+volume_db = -6.0
 
 [node name="GliderMesh" type="Node3D" parent="Glider"]
 position = Vector3(0, 0.3, 0)

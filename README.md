@@ -14,6 +14,7 @@ Armed with a dandelion-seed sniper rifle and a fluff-parachute glider, you must 
 ## Features
 
 - 🎯 **Dandelion Sniper** — Tag blighted fruit from 200 feet away through your bamboo scope. Shoot water droplets onto dry soil to spawn sunflower trampolines.
+- ❤️ **Health & Checkpoints** — 5 heart health with i-frames, camera shake, and a damage vignette. Bloom checkpoint buds to set your respawn; die and you dissolve into pollen and bloom back at the last checkpoint.
 - 🪂 **Aero-Gliding** — Deploy your dandelion-fluff parachute to float between hanging baskets and rafters.
 - 🌿 **Biome Reclamation** — Defeat Queen Weevils to cleanse sectors. Sunlight breaks through, vines grow, new paths open.
 - 🐛 **Boss Battles** — Face off against corrupted garden denizens in each biome.

@@ -62,6 +62,14 @@ extends CharacterBody3D
 @onready var _glider: Node3D = $Glider  # Glider component - use duck typing
 @onready var _projectile_spawner: Node3D = $ProjectileSpawner
 @onready var _damage_flash: ColorRect = $DamageFeedback/Flash
+@onready var _visual_mesh: MeshInstance3D = $MeshInstance3D
+@onready var _sfx_hurt: AudioStreamPlayer = $SFX/Hurt
+@onready var _sfx_death: AudioStreamPlayer = $SFX/Death
+@onready var _sfx_respawn: AudioStreamPlayer = $SFX/Respawn
+
+## Seed-pod burst played when the player dies - the golem comes apart
+## into the same pollen/ash reclamation the enemies get.
+const DEATH_BURST_SCENE := preload("res://scenes/effects/blight_cleanse_burst.tscn")
 
 ## Preload the Glider script for type checking
 const GliderScript = preload("res://scripts/glider.gd")
@@ -81,8 +89,34 @@ signal player_died
 @export var damage_knockback: float = 3.5
 @export var damage_lift: float = 2.0
 
+## === CAMERA SHAKE ===
+## Trauma added per point of damage taken. Shake strength is trauma^2,
+## so small hits are gentle nudges and the killing blow really rattles.
+@export var shake_per_damage: float = 0.45
+
+## How fast trauma decays back to zero (per second)
+@export var shake_decay: float = 2.2
+
+## Max angular offset (radians) of the shake at full trauma
+@export var shake_max_offset: float = 0.05
+
+## Blink rate (blinks/sec) of the body mesh while invulnerable
+@export var iframe_blink_rate: float = 9.0
+
+## Seconds the death dissolve animation runs before the level respawns us.
+## The level's RESPAWN_DELAY should be >= this so the effect can read.
+@export var death_dissolve_time: float = 0.9
+
 var current_health: int = 5
 var _hurt_timer: float = 0.0
+var is_dead: bool = false
+
+## Camera-shake state (trauma model: intensity = trauma^2)
+var _trauma: float = 0.0
+var _shake_time: float = 0.0
+
+## Blink timer for i-frame feedback
+var _blink_time: float = 0.0
 
 ## === STATE ===
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -134,6 +168,19 @@ func _physics_process(delta: float) -> void:
 	## Update timers
 	_update_timers(delta)
 	
+	## Camera shake always ticks, even while dead (death gets a big shake)
+	_update_camera_shake(delta)
+	
+	## Dead: no input, no shooting - just drift to a stop and let the
+	## dissolve animation + level respawn logic take over.
+	if is_dead:
+		velocity.x = move_toward(velocity.x, 0.0, 8.0 * delta)
+		velocity.z = move_toward(velocity.z, 0.0, 8.0 * delta)
+		if not is_on_floor():
+			velocity.y -= _gravity * gravity_multiplier * delta
+		move_and_slide()
+		return
+	
 	## Check for shooting
 	if Input.is_action_just_pressed("shoot"):
 		_fire_seed_projectile()
@@ -168,9 +215,17 @@ func _physics_process(delta: float) -> void:
 
 
 func _update_timers(delta: float) -> void:
-	## Hurt invulnerability cooldown
+	## Hurt invulnerability cooldown + i-frame blink feedback so the player
+	## can SEE they're protected (issue #8: clear feedback)
 	if _hurt_timer > 0.0:
 		_hurt_timer -= delta
+		_blink_time += delta
+		_visual_mesh.visible = fmod(_blink_time * iframe_blink_rate, 1.0) < 0.6
+		if _hurt_timer <= 0.0:
+			_visual_mesh.visible = true
+	else:
+		_blink_time = 0.0
+		_visual_mesh.visible = not is_dead  # hidden during death dissolve
 
 	## Track time since last on ground for coyote time
 	if is_on_floor():
@@ -271,19 +326,28 @@ func _fire_seed_projectile() -> void:
 ## Restore full health (used by level respawn logic)
 func heal_to_full() -> void:
 	current_health = max_health
+	is_dead = false
 	health_changed.emit(current_health, max_health)
 
 
 ## Respawn at a position: restore health, zero velocity, teleport.
-## Used by levels with spawn points / kill planes (Entrance Conservatory).
+## Used by levels with checkpoints / kill planes (Entrance Conservatory).
 func respawn_at(new_position: Vector3) -> void:
 	heal_to_full()
-	_hurt_timer = 0.0
 	velocity = Vector3.ZERO
 	global_position = new_position
 	## Retract the glider so a mid-air death doesn't respawn us floating
 	if _glider.is_deployed:
 		_glider.retract()
+	
+	## Bring the body back from the dissolve
+	_visual_mesh.visible = true
+	_visual_mesh.scale = Vector3.ONE
+	
+	## Brief i-frames after respawn so a lingering enemy can't instantly
+	## re-kill you — punishing but fair (issue #8)
+	_hurt_timer = hurt_invulnerability
+	_sfx_respawn.play()
 
 
 ## Public accessor for camera (useful for UI, cutscenes, etc.)
@@ -304,7 +368,7 @@ func get_current_speed() -> float:
 ## Take damage from enemies/hazards. Called by enemy contact damage and
 ## (in future) hazard scripts. The source position drives the knockback arc.
 func take_damage(amount: int, from_position: Vector3 = Vector3.ZERO) -> void:
-	if _hurt_timer > 0.0:
+	if is_dead or _hurt_timer > 0.0:
 		return
 	_hurt_timer = hurt_invulnerability
 
@@ -319,9 +383,60 @@ func take_damage(amount: int, from_position: Vector3 = Vector3.ZERO) -> void:
 	velocity += away.normalized() * damage_knockback + Vector3.UP * damage_lift
 
 	_flash_damage()
+	add_trauma(shake_per_damage * amount)
+	_sfx_hurt.play()
 
 	if current_health <= 0:
-		player_died.emit()
+		_die()
+
+
+func _die() -> void:
+	## Death state: input dies first, then the body dissolves into pollen
+	## (seed-pod golems come apart the same way blighted things do).
+	is_dead = true
+	_hurt_timer = 0.0  # stop the i-frame blink so the dissolve reads cleanly
+	player_died.emit()
+
+	## Big shake + kill the flash so the dissolve reads cleanly
+	add_trauma(1.0)
+	if _glider.is_deployed:
+		_glider.retract()
+
+	## Dissolve: the body shrinks away as if un-raveling into seeds.
+	## The mesh is hidden while dead (see _update_timers); the tween shapes
+	## the visible shrink before it disappears.
+	_sfx_death.play()
+	var dissolve := create_tween()
+	dissolve.tween_property(_visual_mesh, "scale", Vector3.ONE * 0.05, \
+			death_dissolve_time).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+
+	## Pollen burst at the chest, matching enemy death reclamation feel
+	var burst: Node3D = DEATH_BURST_SCENE.instantiate()
+	get_tree().current_scene.add_child(burst)
+	burst.global_position = global_position + Vector3.UP * 0.3
+
+
+func add_trauma(amount: float) -> void:
+	## Add camera shake trauma (clamped 0..1). Intensity is trauma^2 so
+	## light hits nudge and heavy hits rattle.
+	_trauma = clampf(_trauma + amount, 0.0, 1.0)
+
+
+func _update_camera_shake(delta: float) -> void:
+	## Trauma decays linearly; shake offsets are layered sines of different
+	## frequencies so the shake feels organic rather than a flat rattle.
+	_trauma = maxf(_trauma - shake_decay * delta, 0.0)
+	var shake: float = _trauma * _trauma
+	if _camera == null:
+		return
+	if shake <= 0.0001:
+		_camera.rotation = Vector3.ZERO
+		return
+	_shake_time += delta
+	_camera.rotation = Vector3(
+			sin(_shake_time * 31.0) * 0.5 + sin(_shake_time * 17.3) * 0.5,
+			sin(_shake_time * 24.7) * 0.5 + sin(_shake_time * 41.0) * 0.5,
+			sin(_shake_time * 37.0)) * shake_max_offset * shake
 
 
 func _flash_damage() -> void:
