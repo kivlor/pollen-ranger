@@ -1,9 +1,10 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player/first_person_player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/props/pot.tscn" id="2_pot"]
 [ext_resource type="PackedScene" path="res://scenes/props/trellis.tscn" id="3_trellis"]
 [ext_resource type="PackedScene" path="res://scenes/props/hanging_basket.tscn" id="4_basket"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/blighted_grub.tscn" id="5_grub"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
 size = 100.0
@@ -168,6 +169,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
 [node name="Basket3" parent="Props" instance=ExtResource("4_basket")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 6, 0)
 
+[node name="Enemies" type="Node3D" parent="."]
+
+[node name="Grub_East" parent="Enemies" instance=ExtResource("5_grub")]
+transform = Transform3D(0.913545, 0, -0.406737, 0, 1, 0, 0.406737, 0, 0.913545, 7, 0.02, -7)
+
+[node name="Grub_West" parent="Enemies" instance=ExtResource("5_grub")]
+transform = Transform3D(-0.544639, 0, 0.838671, 0, 1, 0, -0.838671, 0, -0.544639, -8, 0.02, -10)
+patrol_distance = 5.0
+
+[node name="Grub_South" parent="Enemies" instance=ExtResource("5_grub")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 2, 0.02, 14)
+
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="Crosshair" type="Control" parent="UI"]
@@ -209,7 +222,12 @@ Controls:
   Mouse: Look
   Left Click: Fire seed
   G: Toggle glider (in air)
-  Esc: Toggle mouse"
+  Esc: Toggle mouse
+
+Enemies:
+  Blighted Grubs patrol the ground -
+  one seed hit purges them; their
+  touch stings (knockback + flash!)"
 horizontal_alignment = 0
 vertical_alignment = 0
 autowrap_mode = 2

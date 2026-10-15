@@ -61,9 +61,28 @@ extends CharacterBody3D
 @onready var _collision: CollisionShape3D = $CollisionShape3D
 @onready var _glider: Node3D = $Glider  # Glider component - use duck typing
 @onready var _projectile_spawner: Node3D = $ProjectileSpawner
+@onready var _damage_flash: ColorRect = $DamageFeedback/Flash
 
 ## Preload the Glider script for type checking
 const GliderScript = preload("res://scripts/glider.gd")
+
+## === HEALTH ===
+signal health_changed(current_health: int, max_health: int)
+signal player_died
+
+## Hits the player can take before dying (enemies deal 1 contact damage)
+@export var max_health: int = 5
+
+## Grace period after taking a hit, prevents multi-tick contact damage
+@export var hurt_invulnerability: float = 0.8
+
+## Knockback impulse applied away from the damage source
+## Should feel floaty — you're a lightweight seed-pod, you get punted
+@export var damage_knockback: float = 3.5
+@export var damage_lift: float = 2.0
+
+var current_health: int = 5
+var _hurt_timer: float = 0.0
 
 ## === STATE ===
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -79,6 +98,9 @@ func _ready() -> void:
 	## Set up collision layer for player
 	collision_layer = 1  # Layer 1: player
 	collision_mask = 2 | 4 | 8  # Layer 2: environment, 3: climbable, 4: landing
+
+	current_health = max_health
+	health_changed.emit(current_health, max_health)
 	
 	## Capture mouse for first-person controls
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -146,6 +168,10 @@ func _physics_process(delta: float) -> void:
 
 
 func _update_timers(delta: float) -> void:
+	## Hurt invulnerability cooldown
+	if _hurt_timer > 0.0:
+		_hurt_timer -= delta
+
 	## Track time since last on ground for coyote time
 	if is_on_floor():
 		_time_since_grounded = 0.0
@@ -255,3 +281,38 @@ func is_grounded() -> bool:
 ## Get current movement speed for UI/debug
 func get_current_speed() -> float:
 	return Vector3(velocity.x, 0, velocity.z).length()
+
+
+## Take damage from enemies/hazards. Called by enemy contact damage and
+## (in future) hazard scripts. The source position drives the knockback arc.
+func take_damage(amount: int, from_position: Vector3 = Vector3.ZERO) -> void:
+	if _hurt_timer > 0.0:
+		return
+	_hurt_timer = hurt_invulnerability
+
+	current_health = maxi(current_health - amount, 0)
+	health_changed.emit(current_health, max_health)
+
+	## Knockback: punt the player away from the source with a floaty lift
+	var away: Vector3 = global_position - from_position
+	away.y = 0.0
+	if away.length() < 0.01:
+		away = -global_transform.basis.z
+	velocity += away.normalized() * damage_knockback + Vector3.UP * damage_lift
+
+	_flash_damage()
+
+	if current_health <= 0:
+		player_died.emit()
+
+
+func _flash_damage() -> void:
+	## Visual feedback: red vignette flash + small camera roll punch
+	_damage_flash.color.a = 0.45
+	var tween := create_tween()
+	tween.tween_property(_damage_flash, "color:a", 0.0, 0.4).set_ease(Tween.EASE_OUT)
+
+	_camera_pivot.rotation.z = 0.08
+	var roll_tween := create_tween()
+	roll_tween.tween_property(_camera_pivot, "rotation:z", 0.0, 0.3) \
+			.set_ease(Tween.EASE_OUT)

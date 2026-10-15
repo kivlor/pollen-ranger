@@ -20,7 +20,7 @@ roughness = 0.3
 
 [node name="SeedProjectile" type="RigidBody3D"]
 collision_layer = 32
-collision_mask = 34
+collision_mask = 50
 script = ExtResource("1_projectile")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

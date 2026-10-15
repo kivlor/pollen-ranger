@@ -49,12 +49,19 @@ var _trail_points: Array[Vector3] = []
 
 func _ready() -> void:
 	## Set up collision
-	collision_layer = 32  # Layer 5: projectile
-	collision_mask = 2 | 16  # Layer 2: environment, Layer 4: blight/soil
+	collision_layer = 32
+	## Mask environment (2), blighted soil tiles (16) and blight enemies (32)
+	## so seeds can purify soil AND damage creatures like the Blighted Grub
+	collision_mask = 2 | 16 | 32
 	
 	## Configure physics
 	gravity_scale = gravity_scale
 	linear_damp = linear_drag
+
+	## body_entered only fires when contact monitoring is enabled
+	## (a RigidBody3D default-off setting — without this, impacts are never detected)
+	contact_monitor = true
+	max_contacts_reported = 4
 	
 	## Connect to collision
 	body_entered.connect(_on_body_entered)

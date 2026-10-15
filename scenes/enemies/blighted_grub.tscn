@@ -1,0 +1,109 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/blighted_grub.gd" id="1_grub"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_body"]
+albedo_color = Color(0.42, 0.4, 0.46, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_blight"]
+albedo_color = Color(0.55, 0.35, 0.85, 1)
+emission_enabled = true
+emission = Color(0.65, 0.35, 0.95, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_head"]
+material = SubResource("StandardMaterial3D_body")
+radius = 0.11
+height = 0.22
+
+[sub_resource type="SphereMesh" id="SphereMesh_seg"]
+material = SubResource("StandardMaterial3D_body")
+radius = 0.1
+height = 0.2
+
+[sub_resource type="SphereMesh" id="SphereMesh_seg2"]
+material = SubResource("StandardMaterial3D_body")
+radius = 0.09
+height = 0.18
+
+[sub_resource type="SphereMesh" id="SphereMesh_tail"]
+material = SubResource("StandardMaterial3D_body")
+radius = 0.075
+height = 0.15
+
+[sub_resource type="SphereMesh" id="SphereMesh_spot"]
+material = SubResource("StandardMaterial3D_blight")
+radius = 0.025
+height = 0.05
+
+[sub_resource type="SphereMesh" id="SphereMesh_eye"]
+material = SubResource("StandardMaterial3D_blight")
+radius = 0.02
+height = 0.04
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_body"]
+size = Vector3(0.22, 0.26, 0.72)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_damage"]
+size = Vector3(0.36, 0.36, 0.86)
+
+[node name="BlightedGrub" type="CharacterBody3D"]
+collision_layer = 32
+collision_mask = 19
+script = ExtResource("1_grub")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.13, 0)
+shape = SubResource("BoxShape3D_body")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="SegmentHead" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, 0.13, -0.24)
+mesh = SubResource("SphereMesh_head")
+
+[node name="SegmentA" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, 0.12, -0.04)
+mesh = SubResource("SphereMesh_seg")
+
+[node name="SegmentB" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, 0.11, 0.13)
+mesh = SubResource("SphereMesh_seg2")
+
+[node name="SegmentTail" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, 0.1, 0.27)
+mesh = SubResource("SphereMesh_tail")
+
+[node name="EyeL" type="MeshInstance3D" parent="Visual"]
+position = Vector3(-0.05, 0.17, -0.33)
+mesh = SubResource("SphereMesh_eye")
+
+[node name="EyeR" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0.05, 0.17, -0.33)
+mesh = SubResource("SphereMesh_eye")
+
+[node name="Spot1" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0.06, 0.19, -0.02)
+mesh = SubResource("SphereMesh_spot")
+
+[node name="Spot2" type="MeshInstance3D" parent="Visual"]
+position = Vector3(-0.06, 0.18, 0.11)
+mesh = SubResource("SphereMesh_spot")
+
+[node name="Spot3" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, 0.17, 0.29)
+mesh = SubResource("SphereMesh_spot")
+
+[node name="GlowLight" type="OmniLight3D" parent="Visual"]
+light_color = Color(0.65, 0.35, 0.95, 1)
+light_energy = 0.6
+omni_range = 1.2
+
+[node name="DamageArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DamageArea"]
+position = Vector3(0, 0.18, 0)
+shape = SubResource("BoxShape3D_damage")
