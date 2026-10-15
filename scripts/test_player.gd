@@ -102,8 +102,8 @@ func _handle_climbing(delta: float) -> void:
 	velocity.y = climb_input * _climb_speed
 	
 	# Allow some horizontal movement while climbing
-	var horiz_input := Input.get_vector("move_left", "move_right", 0, 0)
-	velocity.x = horiz_input.x * walk_speed * 0.3
+	var horiz_input := Input.get_axis("move_left", "move_right")
+	velocity.x = horiz_input * walk_speed * 0.3
 	velocity.z = 0
 	
 	move_and_slide()

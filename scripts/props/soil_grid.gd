@@ -260,7 +260,7 @@ func _get_adjacent_tiles(pos: Vector2i) -> Array[Vector2i]:
 	var offsets := [Vector2i(-1, 0), Vector2i(1, 0), Vector2i(0, -1), Vector2i(0, 1)]
 	
 	for offset in offsets:
-		var neighbor := pos + offset
+		var neighbor: Vector2i = pos + offset
 		if _is_valid_pos(neighbor):
 			neighbors.append(neighbor)
 	
@@ -272,7 +272,7 @@ func _corrupt_tile_internal(grid_pos: Vector2i) -> void:
 	if not _is_valid_pos(grid_pos):
 		return
 	
-	var old_state := _tile_states[grid_pos.x][grid_pos.y]
+	var old_state: TileState = _tile_states[grid_pos.x][grid_pos.y]
 	if old_state == TileState.BLIGHT:
 		return
 	
@@ -310,7 +310,7 @@ func set_tile_state(grid_pos: Vector2i, state: TileState) -> void:
 	if not _is_valid_pos(grid_pos):
 		return
 	
-	var old_state := _tile_states[grid_pos.x][grid_pos.y]
+	var old_state: TileState = _tile_states[grid_pos.x][grid_pos.y]
 	if old_state == state:
 		return
 	

@@ -1,0 +1,111 @@
+[gd_scene load_steps=16 format=3]
+
+
+[ext_resource type="Script" path="res://scripts/effects/cleanse_burst.gd" id="1_script"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ash"]
+emission_shape = 1
+emission_sphere_radius = 0.3
+spread = 180.0
+gravity = Vector3(0, -7, 0)
+initial_velocity_min = 1.5
+initial_velocity_max = 3.5
+damping_min = 2.0
+damping_max = 4.0
+scale_min = 0.8
+scale_max = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ash"]
+shading_mode = 0
+albedo_color = Color(0.35, 0.32, 0.36, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ash"]
+material = SubResource("StandardMaterial3D_ash")
+size = Vector3(0.05, 0.05, 0.05)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sparks"]
+emission_shape = 1
+emission_sphere_radius = 0.2
+direction = Vector3(0, 1, 0)
+spread = 55.0
+gravity = Vector3(0, 1.2, 0)
+initial_velocity_min = 3.0
+initial_velocity_max = 7.0
+damping_min = 1.0
+damping_max = 2.0
+scale_min = 0.6
+scale_max = 1.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sparks"]
+shading_mode = 0
+blend_mode = 1
+albedo_color = Color(0.8, 0.45, 1, 1)
+billboard_mode = 3
+
+[sub_resource type="SphereMesh" id="SphereMesh_sparks"]
+material = SubResource("StandardMaterial3D_sparks")
+radius = 0.03
+height = 0.06
+radial_segments = 6
+rings = 4
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_pollen"]
+emission_shape = 1
+emission_sphere_radius = 0.4
+direction = Vector3(0, 1, 0)
+spread = 45.0
+gravity = Vector3(0, 1.0, 0)
+initial_velocity_min = 0.5
+initial_velocity_max = 1.5
+damping_min = 1.0
+damping_max = 2.0
+scale_min = 0.6
+scale_max = 1.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pollen"]
+shading_mode = 0
+blend_mode = 1
+albedo_color = Color(0.75, 0.95, 0.35, 1)
+billboard_mode = 3
+
+[sub_resource type="SphereMesh" id="SphereMesh_pollen"]
+material = SubResource("StandardMaterial3D_pollen")
+radius = 0.03
+height = 0.06
+radial_segments = 6
+rings = 4
+
+[node name="BlightCleanseBurst" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="FlashLight" type="OmniLight3D" parent="."]
+light_color = Color(0.72, 0.45, 0.95, 1)
+light_energy = 6.0
+omni_range = 5.0
+
+[node name="AshChunks" type="GPUParticles3D" parent="."]
+emitting = true
+amount = 40
+lifetime = 1.2
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_ash")
+draw_pass_1 = SubResource("BoxMesh_ash")
+
+[node name="EnergySparks" type="GPUParticles3D" parent="."]
+emitting = true
+amount = 30
+lifetime = 0.9
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_sparks")
+draw_pass_1 = SubResource("SphereMesh_sparks")
+
+[node name="BloomPollen" type="GPUParticles3D" parent="."]
+emitting = true
+amount = 24
+lifetime = 1.4
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_pollen")
+draw_pass_1 = SubResource("SphereMesh_pollen")

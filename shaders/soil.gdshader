@@ -1,6 +1,6 @@
 shader_type spatial;
-## Soil shader that blends between BLIGHT (gray/ash) and BLOOM (lush green) states
-## Uses noise for organic-looking transitions and includes a glow effect when cleansed
+// Soil shader that blends between BLIGHT (gray/ash) and BLOOM (lush green) states
+// Uses noise for organic-looking transitions and includes a glow effect when cleansed
 
 // === STATE UNIFORMS ===
 // Blend factor: 0.0 = full BLIGHT, 1.0 = full BLOOM

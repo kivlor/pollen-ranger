@@ -1,0 +1,43 @@
+[gd_scene load_steps=6 format=3]
+
+
+[sub_resource type="Gradient" id="Gradient_mote"]
+offsets = PackedFloat32Array(0, 0.2, 0.8, 1)
+colors = PackedColorArray(0.5, 0.42, 0.62, 0, 0.55, 0.45, 0.68, 0.9, 0.55, 0.45, 0.68, 0.7, 0.5, 0.42, 0.62, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_mote"]
+gradient = SubResource("Gradient_mote")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_mote"]
+emission_shape = 3
+emission_box_extents = Vector3(1, 0.5, 1)
+direction = Vector3(0, 1, 0)
+spread = 40.0
+gravity = Vector3(0, 0.15, 0)
+initial_velocity_min = 0.1
+initial_velocity_max = 0.35
+damping_min = 0.5
+damping_max = 1.0
+scale_min = 0.5
+scale_max = 1.5
+color_ramp = SubResource("GradientTexture1D_mote")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mote"]
+shading_mode = 0
+albedo_color = Color(0.55, 0.45, 0.68, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_mote"]
+material = SubResource("StandardMaterial3D_mote")
+radius = 0.03
+height = 0.06
+radial_segments = 6
+rings = 4
+
+[node name="BlightMotes" type="GPUParticles3D"]
+emitting = true
+amount = 24
+lifetime = 4.0
+randomness = 0.4
+lifetime_randomness = 0.5
+process_material = SubResource("ParticleProcessMaterial_mote")
+draw_pass_1 = SubResource("SphereMesh_mote")
