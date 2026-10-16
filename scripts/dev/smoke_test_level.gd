@@ -189,10 +189,40 @@ func _tick() -> void:
 						"respawned at last checkpoint (pos=%s)"
 						% player.global_position)
 				stage = 21
-		21:  # Wrap up
-			if t > 14.6:
-				print("SMOKE TEST %s" % ("PASSED" if not failed else "FAILED"))
-				quit(0 if not failed else 1)
+		21:  # Scope zoom (issue #9): hold RMB, verify zoom-in + overlay
+			if t > 14.8:
+				Input.action_press("aim_down_sights")
+				stage = 22
+		22:  # Scope fully blended in after the 0.25s tween, then fire scoped
+				if t > 15.4:
+					_check(absf(player._camera.fov - player.scope_fov) < 1.0,
+							"scope zoomed camera FOV to %0.1f" % player._camera.fov)
+					_check(player._scope_overlay.visible
+							and player._scope_overlay.modulate.a > 0.9,
+							"scope overlay faded in while scoped")
+					_check(player._sensitivity_factor < 0.5,
+							"mouse sensitivity reduced while scoped (%0.2f)"
+							% player._sensitivity_factor)
+					Input.action_press("shoot")
+					stage = 23
+		23:  # Scoped shot spawns cleanly, then release RMB
+				Input.action_release("shoot")
+				var scoped_shots: int = _count_rigid(root)
+				if scoped_shots > 0:
+					_check(true, "seed fired while scoped (%d in flight)" % scoped_shots)
+					Input.action_release("aim_down_sights")
+					stage = 24
+		24:  # Release restored normal view
+				if t > 16.0:
+					_check(absf(player._camera.fov - player._base_fov) < 1.0,
+							"release restored FOV to %0.1f" % player._camera.fov)
+					_check(player._scope_overlay.modulate.a < 0.05,
+							"scope overlay faded out on release")
+					stage = 25
+		25:  # Wrap up
+				if t > 16.2:
+					print("SMOKE TEST %s" % ("PASSED" if not failed else "FAILED"))
+					quit(0 if not failed else 1)
 
 
 func _count_projectiles() -> int:

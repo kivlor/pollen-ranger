@@ -14,6 +14,7 @@ extends CharacterBody3D
 ## - Space: Jump
 ## - Mouse: Look around
 ## - Left Click: Fire seed projectile
+## - Right Click (hold): Scope zoom (calm, precise — MDK sniper feel)
 ## - G: Toggle glider
 
 ## === MOVEMENT PARAMETERS ===
@@ -66,6 +67,7 @@ extends CharacterBody3D
 @onready var _sfx_hurt: AudioStreamPlayer = $SFX/Hurt
 @onready var _sfx_death: AudioStreamPlayer = $SFX/Death
 @onready var _sfx_respawn: AudioStreamPlayer = $SFX/Respawn
+@onready var _scope_overlay: Control = $ScopeOverlay/ScopeFrame
 
 ## Seed-pod burst played when the player dies - the golem comes apart
 ## into the same pollen/ash reclamation the enemies get.
@@ -88,6 +90,27 @@ signal player_died
 ## Should feel floaty — you're a lightweight seed-pod, you get punted
 @export var damage_knockback: float = 3.5
 @export var damage_lift: float = 2.0
+
+## === SCOPE (right-click aim zoom) ===
+## Holding RMB steadies the dandelion sniper: the camera FOV eases down
+## to a tight zoom, a circular scope overlay fades in on the HUD, and
+## mouse sensitivity drops so aiming stays calm and precise.
+## Zoom and release are tweened — no FOV snapping.
+@export var scope_fov: float = 25.0
+
+## Seconds for the FOV/overlay/sensitivity blend in and out
+@export var scope_zoom_time: float = 0.25
+
+## Mouse sensitivity multiplier while scoped (40% = slow, steady aim)
+@export var scope_sensitivity_factor: float = 0.4
+
+var _is_scoped: bool = false
+var _base_fov: float = 80.0
+
+## Live sensitivity multiplier, tweened between 1.0 and
+## scope_sensitivity_factor so the slow-down itself feels smooth
+var _sensitivity_factor: float = 1.0
+var _scope_tween: Tween
 
 ## === CAMERA SHAKE ===
 ## Trauma added per point of damage taken. Shake strength is trauma^2,
@@ -145,6 +168,10 @@ func _ready() -> void:
 	if saved_sens != null:
 		mouse_sensitivity = saved_sens
 
+	## Remember the resting FOV so releasing the scope restores it exactly
+	_base_fov = _camera.fov
+	_scope_overlay.modulate.a = 0.0
+
 
 func _input(event: InputEvent) -> void:
 	## Mouse look - direct camera control feels responsive
@@ -181,6 +208,12 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		return
 	
+	## Scope hold: RMB down zooms, RMB release restores. Polled here so
+	## it works with both real input and headless input simulation.
+	var want_scoped: bool = Input.is_action_pressed("aim_down_sights")
+	if want_scoped != _is_scoped:
+		_set_scoped(want_scoped)
+
 	## Check for shooting
 	if Input.is_action_just_pressed("shoot"):
 		_fire_seed_projectile()
@@ -280,12 +313,34 @@ func _handle_movement(delta: float) -> void:
 
 
 func _rotate_camera(relative: Vector2) -> void:
+	## Scoped aiming slows the look speed so fine adjustments stay calm
+	var sens: float = mouse_sensitivity * _sensitivity_factor
+	
 	## Horizontal rotation (yaw) - rotate entire player body
-	rotation.y -= relative.x * mouse_sensitivity
+	rotation.y -= relative.x * sens
 	
 	## Vertical rotation (pitch) - only rotate camera pivot
-	_camera_pivot.rotation.x -= relative.y * mouse_sensitivity
+	_camera_pivot.rotation.x -= relative.y * sens
 	_camera_pivot.rotation.x = clamp(_camera_pivot.rotation.x, min_pitch, max_pitch)
+
+
+func _set_scoped(scoped: bool) -> void:
+	## Blend FOV, sensitivity and the scope overlay in over ~0.25s so
+	## zooming in/out feels like breathing in, not a camera cut.
+	_is_scoped = scoped
+	if _scope_tween != null and _scope_tween.is_valid():
+		_scope_tween.kill()
+	_scope_overlay.visible = true
+	_scope_tween = create_tween().set_parallel()
+	_scope_tween.tween_property(_camera, "fov",
+			scope_fov if scoped else _base_fov, scope_zoom_time) \
+			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	_scope_tween.tween_property(self, "_sensitivity_factor",
+			scope_sensitivity_factor if scoped else 1.0, scope_zoom_time) \
+			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	_scope_tween.tween_property(_scope_overlay, "modulate:a",
+			1.0 if scoped else 0.0, scope_zoom_time) \
+			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 
 func _toggle_mouse_capture() -> void:
@@ -394,6 +449,8 @@ func _die() -> void:
 	## Death state: input dies first, then the body dissolves into pollen
 	## (seed-pod golems come apart the same way blighted things do).
 	is_dead = true
+	## Dying drops the scope so the death dissolve reads unobstructed
+	_set_scoped(false)
 	_hurt_timer = 0.0  # stop the i-frame blink so the dissolve reads cleanly
 	player_died.emit()
 
